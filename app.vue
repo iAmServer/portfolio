@@ -1,0 +1,133 @@
+<template>
+  <div id="app">
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </div>
+</template>
+
+<style>
+@import "tailwindcss";
+
+body {
+  @apply bg-gray-900 text-white;
+  font-family: "Inter", sans-serif;
+}
+
+#app {
+  @apply max-w-2xl mx-auto px-4 py-16;
+}
+
+.main {
+  @apply flex flex-col space-y-12;
+}
+
+.main p {
+  @apply text-sm text-gray-400;
+}
+
+.profile {
+  @apply flex items-center space-x-4 max-w-2xl mx-auto transition-all duration-300 ease-in-out border-b border-gray-900;
+}
+
+.scrolled {
+  @apply flex fixed top-0 left-0 bg-gray-900 text-white w-full mx-auto;
+}
+
+.scrolled .profile {
+  @apply px-4 py-2 w-full max-w-2xl border-gray-800;
+}
+
+.profile img {
+  @apply rounded-full w-24 h-24;
+}
+
+.scrolled .profile img {
+  @apply w-16 h-16;
+}
+
+.profile-info {
+  @apply flex flex-col;
+}
+
+.profile-info h1 {
+  @apply text-2xl font-medium;
+}
+
+.scrolled .profile-info h1 {
+  @apply text-lg;
+}
+
+.profile-info p {
+  @apply text-xs text-gray-400;
+}
+
+.profile a {
+  @apply text-blue-500 hover:text-blue-400 text-xs;
+}
+
+.scrolled .profile-sub {
+  @apply flex flex-row justify-between items-center w-full;
+}
+
+.section {
+  @apply flex flex-col space-y-2;
+}
+
+.section h2 {
+  @apply text-sm font-medium;
+}
+
+.work-experience,
+.projects {
+  @apply list-none flex flex-col space-y-4;
+}
+
+.work-experience li,
+.projects li {
+  @apply flex items-start space-x-4;
+}
+
+.work-experience .work-experience-year {
+  @apply text-gray-500 flex-shrink-0 min-w-[100px];
+}
+
+.work-experience .work-experience-details,
+.projects .project-details {
+  @apply flex flex-col space-y-1;
+}
+
+.work-experience .work-experience-details h2,
+.work-experience .work-experience-details a,
+.projects .project-details h2,
+.projects .project-details a {
+  @apply text-sm font-medium flex items-center;
+}
+
+.projects .project-logo {
+  @apply w-12 h-12 object-contain overflow-hidden flex-shrink-0;
+}
+
+.skills {
+  @apply list-none flex space-x-2 text-xs text-gray-500;
+}
+
+.skills li {
+  @apply relative after:content-[''] after:block after:w-1 after:h-1 after:bg-gray-500 after:rounded-full after:absolute after:-left-2 after:top-1/2 after:-translate-y-1/2 ml-2 
+    first:after:hidden first:ml-0 text-xs text-gray-600 pl-1 first:pl-0;
+}
+
+.footer {
+  @apply list-none flex justify-between text-xs text-gray-500;
+}
+
+.footer li {
+  @apply relative after:content-['\|'] after:absolute after:-left-2 after:top-1/2 after:-translate-y-1/2 ml-2 
+     text-sm text-gray-600 pl-1 first:pl-0;
+}
+
+.footer li a {
+  @apply text-gray-500 hover:text-gray-400 flex items-center stroke-1 stroke-gray-500 
+    hover:stroke-gray-400 transition-colors duration-200 ease-in-out;
+}
+</style>
