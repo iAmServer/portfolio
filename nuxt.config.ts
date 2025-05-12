@@ -26,6 +26,9 @@ export default defineNuxtConfig({
       },
     },
   },
+  routeRules: {
+    "/": { static: true, ssr: true },
+  },
   css: [],
   vite: {
     plugins: [tailwindcss()],
