@@ -62,6 +62,11 @@ export default defineNuxtConfig({
             "I enjoy building dynamic, creative products from start to finish. Focused on developing intuitive experiences that constantly grow and improve based on user metrics. Always shipping.",
         },
       ],
+      link: [
+        { rel: "icon", href: "/favicon.ico" },
+        { rel: "manifest", href: "/site.webmanifest" },
+        { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      ],
     },
   },
 });
