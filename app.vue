@@ -15,15 +15,15 @@ body {
 }
 
 #app {
-  @apply max-w-2xl mx-auto px-4 py-16;
+  @apply max-w-2xl mx-auto px-4 py-8 md:py-16;
 }
 
 .main {
-  @apply flex flex-col space-y-12;
+  @apply flex flex-col space-y-8 md:space-y-12;
 }
 
 .main p {
-  @apply text-sm text-gray-400;
+  @apply text-xs md:text-sm text-gray-400;
 }
 
 .profile {
@@ -31,19 +31,19 @@ body {
 }
 
 .scrolled {
-  @apply flex fixed top-0 left-0 bg-gray-900 text-white w-full mx-auto;
+  @apply flex fixed top-0 left-0 bg-gray-900 text-white w-full mx-auto bg-gray-900;
 }
 
 .scrolled .profile {
-  @apply px-4 py-2 w-full max-w-2xl border-gray-800;
+  @apply px-4 py-2 w-full max-w-2xl border-gray-800 bg-gray-900 space-x-2 md:space-x-4;
 }
 
 .profile img {
-  @apply rounded-full w-24 h-24;
+  @apply rounded-full w-16 md:w-24 h-16 md:h-24;
 }
 
 .scrolled .profile img {
-  @apply w-16 h-16;
+  @apply w-10 md:w-16 h-10 md:h-16;
 }
 
 .profile-info {
@@ -51,11 +51,11 @@ body {
 }
 
 .profile-info h1 {
-  @apply text-2xl font-medium;
+  @apply md:text-2xl font-medium text-lg;
 }
 
 .scrolled .profile-info h1 {
-  @apply text-lg;
+  @apply md:text-lg text-sm;
 }
 
 .profile-info p {
@@ -75,7 +75,7 @@ body {
 }
 
 .section h2 {
-  @apply text-sm font-medium;
+  @apply text-xs md:text-sm font-medium;
 }
 
 .work-experience,
@@ -85,7 +85,8 @@ body {
 
 .work-experience li,
 .projects li {
-  @apply flex items-start space-x-4;
+  @apply flex items-start space-y-1 flex-col md:flex-row md:space-x-4 
+    md:space-y-0;
 }
 
 .work-experience .work-experience-year {
@@ -101,7 +102,7 @@ body {
 .work-experience .work-experience-details a,
 .projects .project-details h2,
 .projects .project-details a {
-  @apply text-sm font-medium flex items-center;
+  @apply text-xs md:text-sm font-medium flex md:items-center;
 }
 
 .projects .project-logo {
@@ -109,7 +110,7 @@ body {
 }
 
 .skills {
-  @apply list-none flex space-x-2 text-xs text-gray-500;
+  @apply list-none flex space-x-2 text-xs text-gray-500 flex-wrap md:flex-nowrap;
 }
 
 .skills li {
@@ -118,16 +119,17 @@ body {
 }
 
 .footer {
-  @apply list-none flex justify-between text-xs text-gray-500;
+  @apply list-none flex justify-between text-xs text-gray-500 flex-col md:flex-row 
+    space-y-2 md:space-y-0 md:space-x-4;
 }
 
 .footer li {
   @apply relative after:content-['\|'] after:absolute after:-left-2 after:top-1/2 after:-translate-y-1/2 ml-2 
-     text-sm text-gray-600 pl-1 first:pl-0;
+     text-sm text-gray-600 pl-1 md:first:pl-0;
 }
 
 .footer li a {
   @apply text-gray-500 hover:text-gray-400 flex items-center stroke-1 stroke-gray-500 
-    hover:stroke-gray-400 transition-colors duration-200 ease-in-out;
+    hover:stroke-gray-400 transition-colors duration-200 ease-in-out text-xs md:text-sm;
 }
 </style>

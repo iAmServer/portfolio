@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     public: {
       name: "Joshua Egbeyemi",
       about:
-        "I love crafting dynamic, innovative products end-to-end. Obsessed with building intuitive experiences that evolve through data-driven iteration. Always shipping, always improving.",
+        "I'm Joshua, an engineer who creates systems that are not just secure, fast, and scalable but also very efficient. My core competencies are in performance optimization, real-time user experience design, and security implementations with a constant eye on the end user. Let’s make something significant.",
       role: "Software Engineer | IAM ",
     },
   },
@@ -54,15 +54,30 @@ export default defineNuxtConfig({
           content: "black-translucent",
         },
         { name: "apple-mobile-web-app-title", content: "Joshua Egbeyemi" },
-        {
-          property: "og:image",
-          content: "/sef.jpeg",
-        },
         { property: "og:type", content: "website" },
+        { property: "og:url", content: "https://iamserver.dev" },
+        { property: "og:title", content: "Joshua Egbeyemi" },
         {
           property: "og:description",
           content:
-            "I enjoy building dynamic, creative products from start to finish. Focused on developing intuitive experiences that constantly grow and improve based on user metrics. Always shipping.",
+            "I love crafting dynamic, innovative products end-to-end. Obsessed with building intuitive experiences that evolve through data-driven iteration. Always shipping, always improving.",
+        },
+        { property: "og:image", content: "/seo.jpg" },
+        { property: "og:site_name", content: "Joshua Egbeyemi" },
+        {
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        { property: "twitter:url", content: "https://iamserver.dev" },
+        { property: "twitter:title", content: "Joshua Egbeyemi" },
+        {
+          property: "twitter:description",
+          content:
+            "I love crafting dynamic, innovative products end-to-end. Obsessed with building intuitive experiences that evolve through data-driven iteration. Always shipping, always improving.",
+        },
+        {
+          property: "twitter:image",
+          content: "/seo.jpg",
         },
       ],
       link: [
