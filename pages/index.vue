@@ -8,6 +8,10 @@
       </p>
     </Section>
 
+    <Section title="Techs 🛠️">
+      <TechsList />
+    </Section>
+
     <Section title="Work Experience 💼">
       <ul class="work-experience">
         <WorkExperience
@@ -100,7 +104,7 @@ const projects = [
     logo: "/ogfims.png",
     description:
       "A marketplace for farmers and buyers to connect, facilitating the sale of agricultural products and services.",
-    domain: "https://eshop.ogfims.com",
+    domain: "https://eshop.ogfims.org",
     skills: ["MERN", "Tailwind CSS", "Nest.js", "SCSS", "Vite.js", "DevOps"],
   },
   {

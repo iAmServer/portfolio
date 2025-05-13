@@ -132,4 +132,17 @@ body {
   @apply text-gray-500 hover:text-gray-400 flex items-center stroke-1 stroke-gray-500 
     hover:stroke-gray-400 transition-colors duration-200 ease-in-out text-xs md:text-sm;
 }
+
+.icons {
+  @apply list-none flex flex-wrap space-x-2 space-y-2 text-xs text-gray-500 flex-wrap;
+}
+
+.icons li {
+  @apply bg-gray-800 rounded-md p-2 flex items-center justify-center w-8 h-8 md:w-10 
+    md:h-10 hover:transform hover:scale-105 transition-transform duration-200 ease-in-out;
+}
+
+.icons li svg {
+  @apply w-6 h-6 md:w-7 md:h-7;
+}
 </style>
