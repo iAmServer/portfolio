@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     public: {
       name: "Joshua Egbeyemi",
       about:
-        "I enjoy building dynamic, creative products from start to finish. Focused on developing intuitive experiences that constantly grow and improve based on user metrics. Always shipping.",
+        "I love crafting dynamic, innovative products end-to-end. Obsessed with building intuitive experiences that evolve through data-driven iteration. Always shipping, always improving.",
       role: "Software Engineer | IAM ",
     },
   },
@@ -42,7 +42,7 @@ export default defineNuxtConfig({
         {
           name: "description",
           content:
-            "I enjoy building dynamic, creative products from start to finish. Focused on developing intuitive experiences that constantly grow and improve based on user metrics. Always shipping. ",
+            "I love crafting dynamic, innovative products end-to-end. Obsessed with building intuitive experiences that evolve through data-driven iteration. Always shipping, always improving.",
         },
         { name: "apple-mobile-web-app-title", content: "Joshua Egbeyemi" },
         { name: "author", content: "Joshua Egbeyemi" },
