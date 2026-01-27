@@ -50,10 +50,10 @@
 const config = useRuntimeConfig();
 const experience = [
   {
-    year: "2024 - Present",
+    year: "2024 - 2025",
     title: "Software Fullstack Software Engineer - Accomplishr",
     description:
-      "A platform that facilicates growth on both the personal and professional level through mentorship and coaching.",
+      "A platform that facilitates growth on both the personal and professional level through mentorship and coaching.",
     domain: "https://accomplishr.com",
     skills: [
       "FastAPI",
