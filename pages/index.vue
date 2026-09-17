@@ -141,6 +141,8 @@
 </template>
 
 <script setup lang="ts">
+defineOgImageComponent("Home");
+
 const metrics = [
   { num: "5s→200ms", label: "search response time, Accomplishr" },
   { num: "500k+", label: "records processed, loan platform" },

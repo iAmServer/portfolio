@@ -2,7 +2,7 @@ import tailwindcss from "@tailwindcss/vite";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
-  compatibilityDate: "2024-11-01",
+  compatibilityDate: "2025-01-01",
   devtools: { enabled: true },
   runtimeConfig: {
     public: {
@@ -17,7 +17,11 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/eslint",
     "@nuxtjs/google-fonts",
+    "nuxt-og-image",
   ],
+  site: {
+    url: "https://iamserver.dev",
+  },
   googleFonts: {
     display: "swap",
     families: {
@@ -62,7 +66,6 @@ export default defineNuxtConfig({
           content:
             "I love crafting dynamic, innovative products end-to-end. Obsessed with building intuitive experiences that evolve through data-driven iteration. Always shipping, always improving.",
         },
-        { property: "og:image", content: "/seo.jpg" },
         { property: "og:site_name", content: "Joshua Egbeyemi" },
         {
           name: "twitter:card",
@@ -74,10 +77,6 @@ export default defineNuxtConfig({
           property: "twitter:description",
           content:
             "I love crafting dynamic, innovative products end-to-end. Obsessed with building intuitive experiences that evolve through data-driven iteration. Always shipping, always improving.",
-        },
-        {
-          property: "twitter:image",
-          content: "/seo.jpg",
         },
       ],
       link: [
