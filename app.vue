@@ -7,142 +7,177 @@
 </template>
 
 <style>
-@import "tailwindcss";
+:root {
+  --bg: #0a0a0a;
+  --surface: #131313;
+  --surface-2: #1d1d1d;
+  --border: #2c2c2c;
+  --border-soft: #1e1e1e;
+  --text: #f1f1f1;
+  --text-dim: #9b9b9b;
+  --text-faint: #6a6a6a;
+  --white: #ffffff;
+  --code-bg: #0e0e0e;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
-  @apply bg-gray-900 text-white;
-  font-family: "Inter", sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--white);
+  color: #0a0a0a;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
 }
 
 #app {
-  @apply max-w-2xl mx-auto px-4 py-8 md:py-16;
+  min-height: 100vh;
 }
 
-.main {
-  @apply flex flex-col space-y-8 md:space-y-12;
+.wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding-inline: 24px;
 }
 
-.main p {
-  @apply text-xs md:text-sm text-gray-400;
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
 }
 
-.profile {
-  @apply flex items-center space-x-4 max-w-2xl mx-auto transition-all duration-300 ease-in-out border-b border-gray-900;
+.btn {
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 11px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
-.scrolled {
-  @apply flex fixed top-0 left-0 bg-gray-900 text-white w-full mx-auto bg-gray-900;
+.btn.primary {
+  background: var(--white);
+  border-color: var(--white);
+  color: #0a0a0a;
+  font-weight: 700;
 }
 
-.scrolled .profile {
-  @apply px-4 py-2 w-full max-w-2xl border-gray-800 bg-gray-900 space-x-2 md:space-x-4;
+.btn.primary:hover {
+  background: #d9d9d9;
 }
 
-.profile img {
-  @apply rounded-full w-16 md:w-24 h-16 md:h-24;
+.btn:not(.primary):hover {
+  border-color: var(--text-faint);
+  background: var(--surface);
 }
 
-.scrolled .profile img {
-  @apply w-10 md:w-16 h-10 md:h-16;
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.profile-info {
-  @apply flex flex-col;
+.pill {
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  padding: 4px 9px;
+  border-radius: 100px;
 }
 
-.profile-info h1 {
-  @apply md:text-2xl font-medium text-lg;
+section {
+  padding-block: 56px;
+  border-bottom: 1px solid var(--border-soft);
 }
 
-.scrolled .profile-info h1 {
-  @apply md:text-lg text-sm;
+section:last-of-type {
+  border-bottom: none;
 }
 
-.profile-info p {
-  @apply text-xs text-gray-400;
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
 }
 
-.profile a {
-  @apply text-blue-500 hover:text-blue-400 text-xs;
+.section-head .path {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11.5px;
+  color: var(--text-faint);
+  letter-spacing: 0.06em;
 }
 
-.scrolled .profile-sub {
-  @apply flex flex-row justify-between items-center w-full;
+.section-head h2 {
+  font-size: 22px;
+  font-weight: 700;
 }
 
-.section {
-  @apply flex flex-col space-y-2;
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.section h2 {
-  @apply text-xs md:text-sm font-medium;
+.panel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--text-faint);
+  background: var(--surface-2);
 }
 
-.work-experience,
-.projects {
-  @apply list-none flex flex-col space-y-4;
-}
-
-.work-experience li,
-.projects li {
-  @apply flex items-start space-y-1 flex-col md:flex-row md:space-x-4 
-    md:space-y-0;
-}
-
-.work-experience .work-experience-year {
-  @apply text-gray-500 flex-shrink-0 min-w-[100px];
-}
-
-.work-experience .work-experience-details,
-.projects .project-details {
-  @apply flex flex-col space-y-1;
-}
-
-.work-experience .work-experience-details h2,
-.work-experience .work-experience-details a,
-.projects .project-details h2,
-.projects .project-details a {
-  @apply text-xs md:text-sm font-medium flex md:items-center;
-}
-
-.projects .project-logo {
-  @apply w-12 h-12 object-contain overflow-hidden flex-shrink-0;
-}
-
-.skills {
-  @apply list-none flex space-x-2 text-xs text-gray-500 flex-wrap md:flex-nowrap;
-}
-
-.skills li {
-  @apply relative after:content-[''] after:block after:w-1 after:h-1 after:bg-gray-500 after:rounded-full after:absolute after:-left-2 after:top-1/2 after:-translate-y-1/2 ml-2 
-    first:after:hidden first:ml-0 text-xs text-gray-600 pl-1 first:pl-0;
-}
-
-.footer {
-  @apply list-none flex justify-between text-xs text-gray-500 flex-col md:flex-row 
-    space-y-2 md:space-y-0 md:space-x-4;
-}
-
-.footer li {
-  @apply relative after:content-['\|'] after:absolute after:-left-2 after:top-1/2 after:-translate-y-1/2 ml-2 
-     text-sm text-gray-600 pl-1 md:first:pl-0;
-}
-
-.footer li a {
-  @apply text-gray-500 hover:text-gray-400 flex items-center stroke-1 stroke-gray-500 
-    hover:stroke-gray-400 transition-colors duration-200 ease-in-out text-xs md:text-sm;
-}
-
-.icons {
-  @apply list-none flex flex-wrap space-x-2 space-y-2 text-xs text-gray-500 flex-wrap;
-}
-
-.icons li {
-  @apply bg-gray-800 rounded-md p-2 flex items-center justify-center w-8 h-8 md:w-10 
-    md:h-10 hover:transform hover:scale-105 transition-transform duration-200 ease-in-out;
-}
-
-.icons li svg {
-  @apply w-6 h-6 md:w-7 md:h-7;
+.panel-bar .code {
+  color: var(--text);
+  font-weight: 600;
 }
 </style>

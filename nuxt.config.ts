@@ -2,14 +2,14 @@ import tailwindcss from "@tailwindcss/vite";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
-  compatibilityDate: "2024-11-01",
+  compatibilityDate: "2025-01-01",
   devtools: { enabled: true },
   runtimeConfig: {
     public: {
       name: "Joshua Egbeyemi",
-      about:
-        "I'm Joshua, an engineer who creates systems that are not just secure, fast, and scalable but also very efficient. My core competencies are in performance optimization, real-time user experience design, and security implementations with a constant eye on the end user. Let’s make something significant.",
-      role: "Software Engineer | IAM ",
+      role: "Senior Full-Stack Engineer — Identity, Search & Applied AI Systems",
+      tagline:
+        "Ten-plus years shipping production software, now spent mostly on the layer underneath the product: search infrastructure, access control, and the AI systems that sit on top of both. I rebuilt Accomplishr's search on vector embeddings and cut response time from 5 seconds to under 200ms — then went and did it again for the community feed.",
     },
   },
   modules: [
@@ -17,7 +17,11 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/eslint",
     "@nuxtjs/google-fonts",
+    "nuxt-og-image",
   ],
+  site: {
+    url: "https://iamserver.dev",
+  },
   googleFonts: {
     display: "swap",
     families: {
@@ -47,8 +51,8 @@ export default defineNuxtConfig({
         { name: "apple-mobile-web-app-title", content: "Joshua Egbeyemi" },
         { name: "author", content: "Joshua Egbeyemi" },
         { name: "aplication-name", content: "Joshua Egbeyemi" },
-        { name: "theme-color", content: "#ffffff" },
-        { name: "color-scheme", content: "light" },
+        { name: "theme-color", content: "#0a0a0a" },
+        { name: "color-scheme", content: "dark" },
         {
           name: "apple-mobile-web-app-status-bar-style",
           content: "black-translucent",
@@ -62,7 +66,6 @@ export default defineNuxtConfig({
           content:
             "I love crafting dynamic, innovative products end-to-end. Obsessed with building intuitive experiences that evolve through data-driven iteration. Always shipping, always improving.",
         },
-        { property: "og:image", content: "/seo.jpg" },
         { property: "og:site_name", content: "Joshua Egbeyemi" },
         {
           name: "twitter:card",
@@ -74,10 +77,6 @@ export default defineNuxtConfig({
           property: "twitter:description",
           content:
             "I love crafting dynamic, innovative products end-to-end. Obsessed with building intuitive experiences that evolve through data-driven iteration. Always shipping, always improving.",
-        },
-        {
-          property: "twitter:image",
-          content: "/seo.jpg",
         },
       ],
       link: [
