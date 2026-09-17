@@ -7,9 +7,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       name: "Joshua Egbeyemi",
-      about:
-        "I'm Joshua, an engineer who creates systems that are not just secure, fast, and scalable but also very efficient. My core competencies are in performance optimization, real-time user experience design, and security implementations with a constant eye on the end user. Let’s make something significant.",
-      role: "Software Engineer | IAM ",
+      role: "Senior Full-Stack Engineer — Identity, Search & Applied AI Systems",
+      tagline:
+        "Ten-plus years shipping production software, now spent mostly on the layer underneath the product: search infrastructure, access control, and the AI systems that sit on top of both. I rebuilt Accomplishr's search on vector embeddings and cut response time from 5 seconds to under 200ms — then went and did it again for the community feed.",
     },
   },
   modules: [
@@ -47,8 +47,8 @@ export default defineNuxtConfig({
         { name: "apple-mobile-web-app-title", content: "Joshua Egbeyemi" },
         { name: "author", content: "Joshua Egbeyemi" },
         { name: "aplication-name", content: "Joshua Egbeyemi" },
-        { name: "theme-color", content: "#ffffff" },
-        { name: "color-scheme", content: "light" },
+        { name: "theme-color", content: "#0a0a0a" },
+        { name: "color-scheme", content: "dark" },
         {
           name: "apple-mobile-web-app-status-bar-style",
           content: "black-translucent",
