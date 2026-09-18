@@ -7,9 +7,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       name: "Joshua Egbeyemi",
-      role: "Senior Full-Stack Engineer — Identity, Search & Applied AI Systems",
+      role: "Senior Full-Stack Engineer, Identity, Search & Applied AI Systems",
       tagline:
-        "Ten-plus years shipping production software, now spent mostly on the layer underneath the product: search infrastructure, access control, and the AI systems that sit on top of both. I rebuilt Accomplishr's search on vector embeddings and cut response time from 5 seconds to under 200ms — then went and did it again for the community feed.",
+        "Ten-plus years shipping production software, now spent mostly on the layer underneath the product: search infrastructure, access control, and the AI systems that sit on top of both. I rebuilt Accomplishr's search on vector embeddings and cut response time from 5 seconds to under 200ms, then went and did it again for the community feed.",
     },
   },
   modules: [
