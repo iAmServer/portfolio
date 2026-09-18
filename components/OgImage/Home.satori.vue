@@ -125,7 +125,7 @@ withDefaults(
   }>(),
   {
     name: "Joshua Egbeyemi",
-    role: "Senior Full-Stack Engineer — Identity, Search & Applied AI",
+    role: "Senior Full-Stack Engineer, Identity, Search & Applied AI",
     scope: () => ["fullstack", "search", "applied_ai", "iam"],
   },
 );

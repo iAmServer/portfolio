@@ -18,7 +18,7 @@
           <div class="about-body">
             <p>
               I'm a senior full-stack engineer based in Moncton, NB, with ten-plus years across
-              backend architecture, frontend delivery, and — increasingly — the access-control
+              backend architecture, frontend delivery, and, increasingly, the access-control
               layer underneath both. Most of that time has gone into
               <strong>Node.js, Python, and TypeScript</strong> backends,
               <strong>React/Vue/Next.js</strong> frontends, and the identity plumbing (<strong
@@ -29,7 +29,7 @@
               The last two years pulled me deeper into applied AI: rebuilding search on
               <strong>OpenSearch vector embeddings</strong>, building a semantic expert-matching
               engine on <strong>MongoDB Vector Search</strong>, and shipping a
-              <strong>LangChain RAG pipeline</strong> for document intelligence — all inside a
+              <strong>LangChain RAG pipeline</strong> for document intelligence, all inside a
               product with real compliance requirements, not a weekend demo.
             </p>
             <p>
@@ -124,7 +124,7 @@
           <h2>Let's talk</h2>
           <p>
             Open to senior full-stack, AI/applied ML, and identity-and-access-focused engineering
-            roles — remote-friendly, based in Moncton, NB.
+            roles, remote-friendly, based in Moncton, NB.
           </p>
           <div class="contact-row">
             <a class="btn primary" href="mailto:dasther@outlook.com">dasther@outlook.com</a>
@@ -164,7 +164,7 @@ const experience = [
       "Set up Google SAML SSO with role-based access control for engineering and CX teams.",
       "Designed a microservice-based payment system integrating Stripe and PayPal with embedded identity verification.",
       "Led the calendar-sync team, building two-way sync with Google and Microsoft Calendar across all product surfaces, and migrated live video from WebRTC to the Zoom API.",
-      "Ran code reviews and sprint planning across two engineering teams and mentored engineers — contributing to a 30%+ drop in production bugs.",
+      "Ran code reviews and sprint planning across two engineering teams and mentored engineers, contributing to a 30%+ drop in production bugs.",
     ],
     skills: [
       "OpenSearch",
