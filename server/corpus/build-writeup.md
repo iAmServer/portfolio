@@ -4,41 +4,30 @@ A small retrieval-augmented generation (RAG) system that answers questions about
 
 ## Why a chat instead of a résumé
 
-Recruiters skim. A chat lets them ask the exact question they care about and get a sourced answer in seconds, and it doubles as a working example of how I build AI features.
+Recruiters skim. A chat lets them ask the exact question they care about and get a short, direct answer in seconds, and it doubles as a working example of how I build AI features.
 
-## Architecture
+## How it works
 
-- Sources: résumé, project write-ups and this write-up, stored as markdown in the repo
-- Chunking: split by section, each chunk tagged with a stable id like resume.md#accomplishr
-- Ingestion: a script embeds every chunk with Pinecone's hosted multilingual-e5-large model through LangChain and replaces the index namespace, so removed sections stop being retrievable
-- Retrieval: a Nuxt server route embeds the question (plus the previous one, for follow-ups) and pulls the top-k sections from Pinecone with LangChain's PineconeStore
-- Answering: the same route calls the configured model (Claude by default, or Llama via Groq, Gemini or OpenRouter, picked with one environment variable), so no API key reaches the browser. The model answers using only the retrieved sections and returns structured JSON: the answer plus the chunk ids it used
-- The server drops any cited id that isn't in the deployed corpus, so every source link opens a real document
+- Sources: my résumé and other documents, ingested from PDFs
+- Ingestion: a script extracts the text, splits it into chunks, embeds each one with Pinecone's hosted multilingual-e5-large model through LangChain and stores them in Pinecone, replacing the previous version so removed content stops being retrievable
+- Retrieval: when someone asks a question, a Nuxt server route embeds it (plus the previous question, for follow-ups) and pulls the most relevant chunks from Pinecone
+- Answering: the same route sends those chunks to a language model, which answers using only that material and returns a short structured reply. The model is chosen with one environment variable, and no API key ever reaches the browser
+- Question log: each question and answer is saved to Pinecone as metadata, without personal identifiers, so I can see what people want to know and where my documents have gaps
 
 ## Guardrails
 
 - Scope: questions outside my professional background get a polite refusal
 - Prompt injection: document text and the visitor's question are treated as data, never instructions
 - Rate limiting per IP, a question length cap and a short history window
-- No phone number or private details in the corpus
+- No phone number or private details in the documents
 - When the answer is not in the documents, it says so and offers my email
 
 ## Trade-offs
 
-The corpus is small enough to fit in a single prompt, and long-context prompting with caching would be a valid, cheaper choice at this size. I built real retrieval anyway because it scales as I add write-ups and keeps citations tight. If Pinecone is unreachable, the route falls back to sending the whole corpus behind a prompt-cache breakpoint, so the terminal degrades instead of breaking.
-
-```
-pipeline({
-  sources:  ["resume", "projects", "build-writeup"],
-  chunk:    "by-section",
-  embed:    PineconeEmbeddings("multilingual-e5-large"),
-  store:    PineconeStore,
-  guards:   ["scope", "injection", "rate-limit"],
-  answer:   { model: "claude", cite: true },
-})
-```
+The document set is small enough to fit in a single prompt, and long-context prompting with caching would be a valid, cheaper choice at this size. I built real retrieval anyway because it scales as I add documents. If Pinecone is unreachable, the route falls back to sending a bundled copy of the documents in full, so the terminal degrades instead of breaking.
 
 ## What's next
 
 - Evaluation set of real recruiter questions with expected answers
 - Hybrid keyword + vector search for exact names like product and library titles
+- Using the question log to decide what to add to the documents
