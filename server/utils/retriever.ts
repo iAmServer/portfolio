@@ -66,9 +66,8 @@ export async function logQuestion(entry: {
 }
 
 export async function retrieve(query: string): Promise<Retrieval> {
-  const all = await loadChunks();
   const vectorStore = getStore();
-  if (!vectorStore) return { chunks: all, fullCorpus: true };
+  if (!vectorStore) return { chunks: await loadChunks(), fullCorpus: true };
 
   try {
     const k = Number(useRuntimeConfig().retrievalTopK) || 6;
@@ -88,5 +87,5 @@ export async function retrieve(query: string): Promise<Retrieval> {
   } catch (error) {
     console.error("[ask] Pinecone search failed, using full corpus", error);
   }
-  return { chunks: all, fullCorpus: true };
+  return { chunks: await loadChunks(), fullCorpus: true };
 }

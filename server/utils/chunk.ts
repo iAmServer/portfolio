@@ -1,8 +1,4 @@
-export const CORPUS_FILES = [
-  "resume.md",
-  "projects.md",
-  "build-writeup.md",
-] as const;
+export const CORPUS_FILES = ["build-writeup.md"] as const;
 
 export type CorpusFile = (typeof CORPUS_FILES)[number];
 
@@ -20,7 +16,7 @@ export function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-export function chunkFile(file: CorpusFile, md: string): Chunk[] {
+export function chunkFile(file: string, md: string): Chunk[] {
   const chunks: Chunk[] = [];
   let title = md.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? file;
   let id: string = file;
