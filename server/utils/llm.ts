@@ -5,14 +5,22 @@ export type Provider = "anthropic" | "groq" | "gemini" | "openrouter";
 interface ProviderInfo {
   label: string;
   /** Runtime-config key holding this provider's API key. */
-  keyName: "anthropicApiKey" | "groqApiKey" | "geminiApiKey" | "openrouterApiKey";
+  keyName:
+    | "anthropicApiKey"
+    | "groqApiKey"
+    | "geminiApiKey"
+    | "openrouterApiKey";
   defaultModel: string;
   /** OpenAI-compatible chat completions endpoint; absent for Anthropic's own SDK. */
   baseUrl?: string;
 }
 
 export const PROVIDERS: Record<Provider, ProviderInfo> = {
-  anthropic: { label: "Anthropic", keyName: "anthropicApiKey", defaultModel: "claude-opus-5-5" },
+  anthropic: {
+    label: "Anthropic",
+    keyName: "anthropicApiKey",
+    defaultModel: "claude-opus-5-5",
+  },
   groq: {
     label: "Groq",
     keyName: "groqApiKey",
@@ -48,7 +56,9 @@ export interface GenerateInput {
   cacheDocuments: boolean;
 }
 
-export type GenerateResult = { refused: true } | { refused: false; json: AnswerJson };
+export type GenerateResult =
+  | { refused: true }
+  | { refused: false; json: AnswerJson };
 
 /** An error safe to show the visitor, with the HTTP status to return. */
 export class LlmError extends Error {
@@ -89,7 +99,8 @@ function parseJson(text: string): AnswerJson {
   } catch {
     const start = text.indexOf("{");
     const end = text.lastIndexOf("}");
-    if (start !== -1 && end > start) return JSON.parse(text.slice(start, end + 1));
+    if (start !== -1 && end > start)
+      return JSON.parse(text.slice(start, end + 1));
     throw new Error("No JSON object in model output");
   }
 }
@@ -102,7 +113,10 @@ async function generateWithAnthropic(
   input: GenerateInput,
 ): Promise<GenerateResult> {
   if (anthropic?.key !== apiKey) {
-    anthropic = { key: apiKey, client: new Anthropic({ apiKey, maxRetries: 2, timeout: 60_000 }) };
+    anthropic = {
+      key: apiKey,
+      client: new Anthropic({ apiKey, maxRetries: 2, timeout: 60_000 }),
+    };
   }
 
   let message: Anthropic.Beta.BetaMessage;
@@ -112,7 +126,10 @@ async function generateWithAnthropic(
       max_tokens: 4000,
       betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default",
-      output_config: { effort: "low", format: { type: "json_schema", schema: input.schema } },
+      output_config: {
+        effort: "low",
+        format: { type: "json_schema", schema: input.schema },
+      },
       system: input.system,
       messages: [
         {
@@ -122,7 +139,9 @@ async function generateWithAnthropic(
               type: "text",
               text: input.documents,
               // Retrieved top-k sets vary per question and aren't worth a cache write.
-              ...(input.cacheDocuments && { cache_control: { type: "ephemeral" as const } }),
+              ...(input.cacheDocuments && {
+                cache_control: { type: "ephemeral" as const },
+              }),
             },
             { type: "text", text: input.prompt },
           ],
@@ -134,7 +153,9 @@ async function generateWithAnthropic(
       throw new LlmError(429, "The terminal is busy. Try again shortly.");
     }
     if (error instanceof Anthropic.APIError) {
-      console.error(`[ask] Anthropic API error ${error.status}: ${error.message}`);
+      console.error(
+        `[ask] Anthropic API error ${error.status}: ${error.message}`,
+      );
     } else {
       console.error("[ask] Anthropic request failed", error);
     }
@@ -190,7 +211,8 @@ async function generateWithOpenAICompatible(
       `[ask] ${info.label} API error ${status ?? ""}`,
       (error as { data?: unknown }).data ?? error,
     );
-    if (status === 429) throw new LlmError(429, "The terminal is busy. Try again shortly.");
+    if (status === 429)
+      throw new LlmError(429, "The terminal is busy. Try again shortly.");
     throw new LlmError(502, "Couldn't reach the model. Try again.");
   }
 
@@ -200,7 +222,8 @@ async function generateWithOpenAICompatible(
 
 export function generateAnswer(input: GenerateInput) {
   const resolved = resolveProvider();
-  if (!resolved) throw new LlmError(503, "The ask terminal isn't configured yet.");
+  if (!resolved)
+    throw new LlmError(503, "The ask terminal isn't configured yet.");
   const { info, apiKey, model, provider } = resolved;
   return provider === "anthropic"
     ? generateWithAnthropic(apiKey, model, input)

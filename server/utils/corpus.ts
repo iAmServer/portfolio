@@ -1,4 +1,4 @@
-import { CORPUS_FILES, chunkFile, type Chunk, type CorpusFile } from "./chunk";
+import { CORPUS_FILES, chunkFile, type CorpusFile } from "./chunk";
 
 export async function readCorpusFile(file: CorpusFile) {
   const text = await useStorage("assets:corpus").getItem<string>(file);
@@ -10,9 +10,10 @@ let cached: Promise<Chunk[]> | undefined;
 
 export function loadChunks() {
   cached ??= Promise.all(
-    CORPUS_FILES.map(async (file) => chunkFile(file, await readCorpusFile(file))),
+    CORPUS_FILES.map(async (file) =>
+      chunkFile(file, await readCorpusFile(file)),
+    ),
   ).then((all) => all.flat());
-  // Don't keep a rejected promise around; let the next request retry.
   cached.catch(() => (cached = undefined));
   return cached;
 }

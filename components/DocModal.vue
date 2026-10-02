@@ -1,11 +1,29 @@
 <template>
   <Teleport to="body">
     <div v-if="doc" class="overlay">
-      <button type="button" class="scrim" aria-label="Close document" tabindex="-1" @click="close" />
-      <div ref="dialogEl" role="dialog" aria-modal="true" aria-labelledby="doc-title" class="dialog">
+      <button
+        type="button"
+        class="scrim"
+        aria-label="Close document"
+        tabindex="-1"
+        @click="close"
+      />
+      <div
+        ref="dialogEl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="doc-title"
+        class="dialog"
+      >
         <div class="titlebar">
           <span id="doc-title" class="mono">{{ doc.file }}</span>
-          <button ref="closeEl" type="button" aria-label="Close" class="close" @click="close">
+          <button
+            ref="closeEl"
+            type="button"
+            aria-label="Close"
+            class="close"
+            @click="close"
+          >
             <svg
               width="18"
               height="18"
@@ -23,20 +41,30 @@
           </button>
         </div>
         <div ref="bodyEl" class="body">
-          <div v-if="status === 'pending'" class="mono fog">loading {{ doc.file }}…</div>
+          <div v-if="status === 'pending'" class="mono fog">
+            loading {{ doc.file }}…
+          </div>
           <div v-else-if="status === 'error'" class="p">
             The document couldn't be loaded. Please try again.
           </div>
           <template v-for="(b, i) in blocks" v-else :key="i">
             <h2 v-if="b.kind === 'h1'" :id="b.slug" class="h2">{{ b.text }}</h2>
-            <h3 v-else-if="b.kind === 'h2'" :id="b.slug" class="h3" :class="{ hit: b.slug === doc.anchor }">
+            <h3
+              v-else-if="b.kind === 'h2'"
+              :id="b.slug"
+              class="h3"
+              :class="{ hit: b.slug === doc.anchor }"
+            >
               {{ b.text }}
             </h3>
             <h4 v-else-if="b.kind === 'h3'" class="h4">{{ b.text }}</h4>
             <div v-else-if="b.kind === 'li'" class="li">
-              <span class="mono fog" aria-hidden="true">-</span><span>{{ b.text }}</span>
+              <span class="mono fog" aria-hidden="true">-</span
+              ><span>{{ b.text }}</span>
             </div>
-            <pre v-else-if="b.kind === 'code'" class="code mono">{{ b.text }}</pre>
+            <pre v-else-if="b.kind === 'code'" class="code mono">{{
+              b.text
+            }}</pre>
             <p v-else class="p">{{ b.text }}</p>
           </template>
         </div>
@@ -46,12 +74,6 @@
 </template>
 
 <script setup lang="ts">
-interface Block {
-  kind: "h1" | "h2" | "h3" | "p" | "li" | "code";
-  text: string;
-  slug?: string;
-}
-
 const { doc, close } = useDocViewer();
 const blocks = ref<Block[]>([]);
 const status = ref<"idle" | "pending" | "error">("idle");
@@ -59,7 +81,6 @@ const bodyEl = ref<HTMLElement>();
 const closeEl = ref<HTMLButtonElement>();
 let returnFocus: HTMLElement | null = null;
 
-// Mirrors server/utils/chunk.ts so heading ids match citation anchors.
 const slugify = (text: string) =>
   text
     .toLowerCase()
@@ -102,7 +123,11 @@ function parseMarkdown(md: string): Block[] {
     if (h) {
       flush();
       const text = clean(h[2]);
-      out.push({ kind: `h${h[1].length}` as Block["kind"], text, slug: slugify(text) });
+      out.push({
+        kind: `h${h[1].length}` as Block["kind"],
+        text,
+        slug: slugify(text),
+      });
     } else if (li) {
       flush();
       out.push({ kind: "li", text: clean(li[1]) });
@@ -137,9 +162,12 @@ watch(
       blocks.value = [];
       status.value = "pending";
       try {
-        const md = await $fetch<string>(`/api/docs/${encodeURIComponent(d.file)}`, {
-          responseType: "text",
-        });
+        const md = await $fetch<string>(
+          `/api/docs/${encodeURIComponent(d.file)}`,
+          {
+            responseType: "text",
+          },
+        );
         cache.set(d.file, parseMarkdown(md));
         if (doc.value?.file !== d.file) return;
         blocks.value = cache.get(d.file)!;
@@ -151,7 +179,9 @@ watch(
 
     await nextTick();
     closeEl.value?.focus();
-    const target = d.anchor ? bodyEl.value?.querySelector<HTMLElement>(`#${CSS.escape(d.anchor)}`) : null;
+    const target = d.anchor
+      ? bodyEl.value?.querySelector<HTMLElement>(`#${CSS.escape(d.anchor)}`)
+      : null;
     if (target) target.scrollIntoView({ block: "start" });
     else bodyEl.value?.scrollTo({ top: 0 });
   },

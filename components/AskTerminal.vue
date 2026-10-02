@@ -8,7 +8,8 @@
     <div ref="logEl" class="log" aria-live="polite">
       <div v-for="(entry, i) in entries" :key="i" class="entry">
         <div>
-          <span class="fog">&gt;</span> <span class="cobalt">ask</span> <span class="plum">"{{ entry.q }}"</span>
+          <span class="fog">&gt;</span> <span class="cobalt">ask</span>
+          <span class="plum">"{{ entry.q }}"</span>
         </div>
         <div v-if="entry.pending" class="body fog">thinking…</div>
         <div v-else-if="entry.error" class="body rust">{{ entry.error }}</div>
@@ -44,8 +45,13 @@
         maxlength="500"
         placeholder="type a question about my work…"
         :disabled="busy"
+      />
+      <button
+        type="submit"
+        aria-label="Send question"
+        class="send"
+        :disabled="busy || !question.trim()"
       >
-      <button type="submit" aria-label="Send question" class="send" :disabled="busy || !question.trim()">
         <svg
           width="18"
           height="18"
@@ -62,26 +68,14 @@
         </svg>
       </button>
     </form>
-    <p class="notice">Questions are logged without personal identifiers so I can see what people ask.</p>
+    <p class="notice">
+      Questions are logged without personal identifiers so I can see what people
+      ask.
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
-interface Source {
-  id: string;
-  file: string;
-  title: string;
-}
-
-interface Entry {
-  q: string;
-  a?: string;
-  sources?: Source[];
-  pending?: boolean;
-  error?: string;
-  example?: boolean;
-}
-
 const docs = useDocViewer();
 
 const entries = ref<Entry[]>([
@@ -90,7 +84,11 @@ const entries = ref<Entry[]>([
     a: "Yes. At Accomplishr he designed a microservice-based payment system for every product feature: Stripe and PayPal, with built-in identity verification.",
     sources: [
       { id: "resume.md#accomplishr", file: "resume.md", title: "Accomplishr" },
-      { id: "projects.md#payments-platform", file: "projects.md", title: "Payments platform" },
+      {
+        id: "projects.md#payments-platform",
+        file: "projects.md",
+        title: "Payments platform",
+      },
     ],
     example: true,
   },
@@ -138,15 +136,24 @@ async function submit() {
   scrollToEnd();
 
   try {
-    const res = await $fetch<{ answer: string; sources: Source[] }>("/api/ask", {
-      method: "POST",
-      body: { question: q, history },
-    });
+    const res = await $fetch<{ answer: string; sources: Source[] }>(
+      "/api/ask",
+      {
+        method: "POST",
+        body: { question: q, history },
+      },
+    );
     entry.a = res.answer;
     entry.sources = res.sources;
   } catch (err: unknown) {
-    const e = err as { statusMessage?: string; data?: { statusMessage?: string } };
-    entry.error = e.data?.statusMessage || e.statusMessage || "Something went wrong. Try again.";
+    const e = err as {
+      statusMessage?: string;
+      data?: { statusMessage?: string };
+    };
+    entry.error =
+      e.data?.statusMessage ||
+      e.statusMessage ||
+      "Something went wrong. Try again.";
   } finally {
     entry.pending = false;
     busy.value = false;
