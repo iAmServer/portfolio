@@ -3,9 +3,7 @@
     <SiteHeader @ask="terminal?.focus()" />
 
     <main>
-      <section class="wrap hero split">
-        <AskTerminal ref="terminal" />
-
+      <section class="wrap hero">
         <div class="intro">
           <span class="badge">Open to senior &amp; AI roles</span>
           <h1>I build systems that stay fast and secure when it matters.</h1>
@@ -19,6 +17,8 @@
             <a href="#contact" class="fog">Get in touch &gt;</a>
           </div>
         </div>
+
+        <AskTerminal ref="terminal" />
       </section>
 
       <section class="wrap previously" aria-labelledby="previously">
@@ -162,8 +162,18 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
 }
 
 .hero {
-  padding-top: clamp(40px, 8vw, 72px);
+  padding-top: clamp(32px, 8vw, 72px);
   padding-bottom: 64px;
+  display: grid;
+  gap: 40px;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 64px;
+  }
 }
 
 .intro {
@@ -185,8 +195,8 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
 }
 
 h1 {
-  font-size: clamp(34px, 8vw, 48px);
-  line-height: 1.1;
+  font-size: clamp(36px, 9vw, 56px);
+  line-height: 1.05;
   font-weight: 500;
   letter-spacing: -0.021em;
 }

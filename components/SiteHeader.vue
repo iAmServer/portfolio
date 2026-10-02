@@ -179,6 +179,12 @@ onMounted(() => {
   border-color: var(--fog);
 }
 
+@media (max-width: 640px) {
+  .nav {
+    display: none;
+  }
+}
+
 @media (max-width: 520px) {
   .ask kbd {
     display: none;
