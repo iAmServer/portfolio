@@ -1,424 +1,336 @@
 <template>
-  <div>
-    <NavBar />
-    <div id="top" />
+  <div id="top">
+    <SiteHeader @ask="terminal?.focus()" />
 
-    <Hero />
+    <main>
+      <section class="wrap hero split">
+        <AskTerminal ref="terminal" />
 
-    <Metrics :metrics="metrics" />
-
-    <section id="about">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="path">GET /about</span>
-          <h2>About</h2>
-        </div>
-        <div class="panel">
-          <div class="panel-bar"><span>identity.json</span><span class="code">200 OK</span></div>
-          <div class="about-body">
-            <p>
-              I'm a senior full-stack engineer based in Moncton, NB, with ten-plus years across
-              backend architecture, frontend delivery, and, increasingly, the access-control
-              layer underneath both. Most of that time has gone into
-              <strong>Node.js, Python, and TypeScript</strong> backends,
-              <strong>React/Vue/Next.js</strong> frontends, and the identity plumbing (<strong
-                >SSO, SAML, RBAC, OAuth2</strong
-              >) that decides who gets to see what.
-            </p>
-            <p>
-              The last two years pulled me deeper into applied AI: rebuilding search on
-              <strong>OpenSearch vector embeddings</strong>, building a semantic expert-matching
-              engine on <strong>MongoDB Vector Search</strong>, and shipping a
-              <strong>LangChain RAG pipeline</strong> for document intelligence, all inside a
-              product with real compliance requirements, not a weekend demo.
-            </p>
-            <p>
-              I hold ISC2 and ISO/IEC 27001:2022 Lead Auditor certifications, and a PGD in
-              Cybersecurity and Intelligence Engineering. I care about systems that stay fast and
-              legible as they scale, and about handing off code a reviewer doesn't have to squint
-              at.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="experience">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="path">GET /experience</span>
-          <h2>Experience</h2>
-        </div>
-        <div class="panel">
-          <div class="panel-bar">
-            <span>career_history.log</span><span class="code">{{ experience.length }} entries</span>
-          </div>
-          <ExperienceItem
-            v-for="(item, index) in experience"
-            :key="index"
-            :title="item.title"
-            :company="item.company"
-            :year="item.year"
-            :domain="item.domain"
-            :details="item.details"
-            :skills="item.skills"
-          />
-        </div>
-      </div>
-    </section>
-
-    <section id="projects">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="path">GET /projects</span>
-          <h2>Projects</h2>
-        </div>
-        <div class="proj-grid">
-          <ProjectCard
-            v-for="(item, index) in projects"
-            :key="index"
-            :path="item.path"
-            :title="item.title"
-            :description="item.description"
-            :domain="item.domain"
-            :skills="item.skills"
-          />
-        </div>
-      </div>
-    </section>
-
-    <section id="skills">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="path">GET /skills</span>
-          <h2>Skills</h2>
-        </div>
-        <div class="matrix">
-          <SkillGroup
-            v-for="group in skillGroups"
-            :key="group.title"
-            :title="group.title"
-            :items="group.items"
-          />
-        </div>
-      </div>
-    </section>
-
-    <section aria-label="open source and credentials">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="path">GET /credentials</span>
-          <h2>Open source &amp; credentials</h2>
-        </div>
-        <div class="two-col">
-          <ListPanel title="Open source (npm)" :rows="openSource" />
-          <ListPanel title="Certifications &amp; education" :rows="credentials" />
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" aria-label="contact">
-      <div class="wrap">
-        <div class="contact-panel">
-          <span class="path">POST /contact</span>
-          <h2>Let's talk</h2>
-          <p>
-            Open to senior full-stack, AI/applied ML, and identity-and-access-focused engineering
-            roles, remote-friendly, based in Moncton, NB.
+        <div class="intro">
+          <span class="badge">Open to senior &amp; AI roles</span>
+          <h1>I build systems that stay fast and secure when it matters.</h1>
+          <p class="lead">
+            Senior full stack engineer, 10+ years across search, payments, access control and
+            real-time features. Ask the terminal anything: it answers from my actual documents, with
+            sources.
           </p>
-          <div class="contact-row">
-            <a class="btn primary" href="mailto:dasther@outlook.com">dasther@outlook.com</a>
-            <a class="btn" href="https://linkedin.com/in/iamserver/" target="_blank" rel="noopener"
-              >linkedin.com/in/iamserver</a
-            >
+          <div class="links">
+            <a href="#how">See how the terminal works &gt;</a>
+            <a href="#contact" class="fog">Get in touch &gt;</a>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <SiteFooter />
+      <section class="wrap previously" aria-labelledby="previously">
+        <div id="previously" class="eyebrow">Previously building at</div>
+        <ul class="companies">
+          <li v-for="c in companies" :key="c.name">
+            <a :href="c.url" target="_blank" rel="noopener noreferrer">{{ c.name }}</a>
+          </li>
+        </ul>
+      </section>
+
+      <section id="how" class="wrap block split">
+        <div class="stack">
+          <div class="eyebrow">How the terminal works</div>
+          <h2 class="h2">A small RAG system, built like production.</h2>
+          <p class="muted narrow">
+            Pinecone retrieval through LangChain, answered by Claude from a Nuxt server route. Scoped
+            to questions about me, defended against prompt injection, rate-limited, and every answer
+            cites the document it came from.
+          </p>
+          <button type="button" class="text-btn" @click="docs.open('build-writeup.md')">
+            Read the build write-up &gt;
+          </button>
+        </div>
+        <div class="code-card mono" role="figure" aria-label="RAG pipeline configuration">
+          <div class="code-title">rag.pipeline.ts</div>
+          <pre><span class="cobalt">pipeline</span>({
+  <span class="cobalt">sources</span>: [<span class="plum">"resume"</span>, <span class="plum">"projects"</span>, <span class="plum">"build-writeup"</span>],
+  <span class="cobalt">chunk</span>:   <span class="plum">"by-section"</span>,
+  <span class="cobalt">embed</span>:   <span class="teal">PineconeEmbeddings</span>(<span class="plum">"multilingual-e5-large"</span>),
+  <span class="cobalt">store</span>:   <span class="teal">PineconeStore</span>,
+  <span class="cobalt">guards</span>:  [<span class="plum">"scope"</span>, <span class="plum">"injection"</span>, <span class="plum">"rate-limit"</span>],
+  <span class="cobalt">answer</span>:  { <span class="cobalt">model</span>: <span class="plum">"claude"</span>, <span class="cobalt">cite</span>: <span class="rust">true</span> },
+})</pre>
+        </div>
+      </section>
+
+      <section id="oss" class="wrap block">
+        <div class="stack tight">
+          <div class="eyebrow">Open source</div>
+          <h2 class="h2">Small tools, published on npm.</h2>
+        </div>
+        <div class="packages">
+          <a
+            v-for="p in packages"
+            :key="p.name"
+            :href="`https://www.npmjs.com/package/${p.name}`"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="package"
+          >
+            <span class="mono pkg-name">{{ p.name }}</span>
+            <span class="muted">{{ p.detail }}</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer id="contact" class="footer">
+      <div class="wrap footer-row">
+        <span class="fog">© {{ year }} {{ config.public.name }}</span>
+        <div class="footer-links">
+          <a href="mailto:dasther@outlook.com">dasther@outlook.com</a>
+          <a href="https://linkedin.com/in/iamserver/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/iamserver" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.npmjs.com/~iamserver" target="_blank" rel="noopener">npm</a>
+        </div>
+      </div>
+    </footer>
+
+    <DocModal />
   </div>
 </template>
 
 <script setup lang="ts">
 defineOgImageComponent("Home");
 
-const metrics = [
-  { num: "5s→200ms", label: "search response time, Accomplishr" },
-  { num: "500k+", label: "records processed, loan platform" },
-  { num: "20k+", label: "users on shipped apps" },
-  { num: "30%+", label: "drop in production bugs" },
-  { num: "10+ yrs", label: "production engineering" },
+const config = useRuntimeConfig();
+const docs = useDocViewer();
+const terminal = ref<{ focus: () => void }>();
+const year = new Date().getFullYear();
+
+const companies = [
+  { name: "Accomplishr", url: "https://accomplishr.com" },
+  { name: "Microvest", url: "https://microvest.ng" },
+  { name: "The Mullings Group", url: "https://themullingsgroup.com" },
+  { name: "First Pavilion", url: "https://firstpavitech.com" },
 ];
 
-const experience = [
+const packages = [
   {
-    year: "Jan 2024 – Oct 2025",
-    title: "Senior Full Stack Software Engineer",
-    company: "Accomplishr",
-    domain: "https://accomplishr.com",
-    details: [
-      "Rebuilt user search and community-feed aggregation on OpenSearch vector embeddings, cutting response times from 5s and ~3s respectively to under 200ms at scale.",
-      "Designed and shipped a semantic expert-recommendation engine using MongoDB Vector Search and OpenAI embeddings, matching users by role, skills, education, and bio.",
-      "Built a LangChain-based RAG pipeline for document intelligence, extending the platform's AI extraction and synthesis capabilities.",
-      "Set up Google SAML SSO with role-based access control for engineering and CX teams.",
-      "Designed a microservice-based payment system integrating Stripe and PayPal with embedded identity verification.",
-      "Led the calendar-sync team, building two-way sync with Google and Microsoft Calendar across all product surfaces, and migrated live video from WebRTC to the Zoom API.",
-      "Ran code reviews and sprint planning across two engineering teams and mentored engineers, contributing to a 30%+ drop in production bugs.",
-    ],
-    skills: [
-      "OpenSearch",
-      "MongoDB Vector Search",
-      "OpenAI API",
-      "LangChain",
-      "NestJS",
-      "SAML / RBAC",
-      "Stripe",
-      "GraphQL",
-    ],
+    name: "tailwind-sidebar-expanded",
+    detail: "Expandable/collapsible sidebar variant for Tailwind.",
   },
-  {
-    year: "Sep 2021 – Sep 2023",
-    title: "Frontend & Mobile Software Engineer",
-    company: "Microvest",
-    domain: "https://microvest.ng",
-    details: [
-      "Shipped and maintained cross-platform apps used by more than 20,000 users.",
-      "Built a real-time dashboard giving internal teams visibility into customer activity.",
-      "Built a Treasury module with automated reporting and access controls for financial operations.",
-      "Added Cloudinary-based media optimization, improving load times for mobile users.",
-    ],
-    skills: ["Angular", "Ionic", "Capacitor", "Nuxt.js", "Cloudinary"],
-  },
-  {
-    year: "Jul 2019 – Sep 2021",
-    title: "Full Stack Software Engineer",
-    company: "The Mullings Group",
-    domain: "https://themullingsgroup.com",
-    details: [
-      "Designed a Node.js Pub/Sub and event-broker system, reducing sync delays in data management.",
-      "Built real-time gameplay story workflows supporting an active base of 3,000+ players.",
-      "Consolidated data sources behind a Python API layer, simplifying future integrations.",
-      "Replaced legacy jQuery modules with React, improving stability and performance.",
-    ],
-    skills: ["Node.js", "Pub/Sub", "Python", "React"],
-  },
-  {
-    year: "Sep 2015 – Apr 2019",
-    title: "Full Stack Software Engineer",
-    company: "First Pavilion Technologies",
-    domain: "https://firstpavitech.com",
-    details: [
-      "Built a coworking management platform with real-time Wi-Fi access and time tracking.",
-      "Created an LMS with analytics dashboards for monitoring student engagement.",
-      "Improved page load speed and responsiveness across multiple client platforms.",
-      "Standardized UI components and backend integrations across projects to reduce maintenance.",
-    ],
-    skills: ["Python", "Django", "MongoDB", "SQL"],
-  },
+  { name: "ngx-countdown", detail: "Angular directive for configurable countdown timers." },
+  { name: "no-log", detail: "Strips console logging from production builds." },
 ];
 
-const projects = [
-  {
-    path: "/semantic-search-rebuild",
-    title: "Semantic Search Rebuild",
-    description:
-      "Rebuilt platform-wide user search at Accomplishr on OpenSearch vector embeddings, dropping response time from 5s to under 200ms at scale.",
-    skills: ["OpenSearch", "Vector Embeddings"],
-  },
-  {
-    path: "/expert-recommendation-engine",
-    title: "Expert Recommendation Engine",
-    description:
-      "Production semantic-matching system on MongoDB Vector Search and OpenAI embeddings, matching users to experts by role, skills, education, and bio.",
-    skills: ["MongoDB Vector Search", "OpenAI"],
-  },
-  {
-    path: "/rag-document-summarizer",
-    title: "RAG Document Summarizer",
-    description:
-      "Personal project: a LangChain and OpenAI-powered summarizer supporting single and batch PDF processing.",
-    skills: ["LangChain", "Python", "RAG"],
-  },
-  {
-    path: "/integrated-banking-loan",
-    title: "Integrated Banking Loan Platform",
-    description:
-      "Loan-processing system managing 500,000+ public-servant records, cutting manual reconciliation by more than 60%.",
-    domain: "https://ibl.acefinancials.com.ng",
-    skills: ["Python", "SQL", "Next.js"],
-  },
-  {
-    path: "/ogfims",
-    title: "OGFIMS",
-    description:
-      "Platform built for the Ogun State Government to manage farmer enrollment, procurement, and farmer–buyer connections.",
-    domain: "https://eshop.ogfims.org",
-    skills: ["MERN", "Tailwind CSS", "NestJS"],
-  },
-  {
-    path: "/encrypted-sms-messaging",
-    title: "Encrypted SMS Messaging",
-    description: "Secure messaging system with encrypted delivery and external SMS provider integration.",
-    skills: ["Ionic", "Angular", "Node.js"],
-  },
-];
-
-const skillGroups = [
-  {
-    title: "AI & LLM Engineering",
-    items: ["LangChain", "OpenAI API", "Anthropic API", "RAG pipelines", "Prompt engineering"],
-  },
-  {
-    title: "Vector Search & Retrieval",
-    items: ["MongoDB Vector Search", "OpenSearch", "Pinecone", "AI embeddings"],
-  },
-  {
-    title: "Architecture & Systems",
-    items: ["Microservices", "Event-driven design", "Pub/Sub", "API design", "Scalability"],
-  },
-  {
-    title: "Backend & APIs",
-    items: [
-      "Node.js",
-      "NestJS",
-      "FastAPI",
-      "Flask",
-      "Python",
-      "TypeScript",
-      "GraphQL",
-      "Kafka",
-      "RabbitMQ",
-    ],
-  },
-  {
-    title: "Frontend",
-    items: ["React", "Vue.js", "Angular", "Next.js", "Nuxt.js", "Ionic", "Tailwind CSS"],
-  },
-  {
-    title: "Cloud & DevOps",
-    items: ["AWS", "Azure", "GCP", "Docker", "Nginx", "Cloudflare", "GitHub Actions"],
-  },
-  {
-    title: "Security & Compliance",
-    items: ["GDPR", "IAM", "OAuth2", "RBAC", "SAML", "JWT", "ISO 27001", "ISC2"],
-  },
-  {
-    title: "Databases & QA",
-    items: ["PostgreSQL", "MongoDB", "Redis", "Elasticsearch", "Jest", "Playwright"],
-  },
-];
-
-const openSource = [
-  {
-    title: "tailwind-sidebar-expanded",
-    detail:
-      "Tailwind CSS plugin adding an expandable/collapsible sidebar variant for responsive layouts.",
-  },
-  {
-    title: "ngx-countdown",
-    detail:
-      "Angular directive for configurable countdown timers, with target-date binding and event hooks.",
-  },
-  {
-    title: "no-log",
-    detail: "Lightweight utility that strips console logging from production builds.",
-  },
-];
-
-const credentials = [
-  { title: "Certified in Cybersecurity (CC)", detail: "ISC2" },
-  { title: "ISO/IEC 27001:2022 Lead Auditor", detail: "Mastermind" },
-  {
-    title: "PGD, Cybersecurity & Intelligence Engineering",
-    detail: "Ontario College of Management and Technology",
-  },
-  { title: "HND, Computer Science", detail: "Moshood Abiola Polytechnic" },
-];
+function onKey(e: KeyboardEvent) {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    terminal.value?.focus();
+  }
+}
+onMounted(() => window.addEventListener("keydown", onKey));
+onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
 </script>
 
 <style scoped>
-.about-body {
-  padding: 22px 22px 24px;
-}
-
-.about-body p {
-  color: var(--text-dim);
-  margin-bottom: 14px;
-}
-
-.about-body p:last-child {
-  margin-bottom: 0;
-}
-
-.about-body :deep(strong) {
-  color: var(--text);
-  font-weight: 600;
-}
-
-.proj-grid {
+.split {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+  gap: 64px;
+  align-items: center;
 }
 
-.matrix {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+.hero {
+  padding-top: clamp(40px, 8vw, 72px);
+  padding-bottom: 64px;
 }
 
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.contact-panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 32px;
-  text-align: center;
-}
-
-.contact-panel .path {
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 11.5px;
-  color: var(--text-faint);
-  margin-bottom: 10px;
-  display: block;
-}
-
-.contact-panel h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.contact-panel p {
-  color: var(--text-dim);
-  max-width: 48ch;
-  margin: 0 auto 22px;
-}
-
-.contact-row {
+.intro {
   display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 24px;
 }
 
-@media (max-width: 760px) {
-  .proj-grid {
-    grid-template-columns: 1fr;
-  }
-  .matrix {
-    grid-template-columns: 1fr;
-  }
-  .two-col {
-    grid-template-columns: 1fr;
-  }
+.badge {
+  align-self: flex-start;
+  padding: 4px 8px;
+  border: 1px solid var(--tint);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.056em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+h1 {
+  font-size: clamp(34px, 8vw, 48px);
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.021em;
+}
+
+.lead {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--slate);
+  max-width: 500px;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.previously {
+  padding-bottom: 64px;
+}
+
+.previously .eyebrow {
+  padding-top: 32px;
+  border-top: 1px solid var(--tint);
+  margin-bottom: 12px;
+}
+
+.companies {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--fog);
+}
+
+.companies a:hover {
+  color: var(--ink);
+}
+
+.block {
+  padding-block: clamp(40px, 8vw, 64px);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stack.tight {
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.muted {
+  color: var(--slate);
+}
+
+.narrow {
+  max-width: 460px;
+}
+
+.text-btn {
+  align-self: flex-start;
+  padding: 10px 0;
+  min-height: 44px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.text-btn:hover {
+  text-decoration: underline;
+}
+
+.code-card {
+  background: var(--tint);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 16px 20px;
+  font-size: 14px;
+  line-height: 1.8;
+  overflow-x: auto;
+}
+
+.code-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.code-card pre {
+  margin: 0;
+  font: inherit;
+}
+
+.packages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: 16px;
+}
+
+.package {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--tint);
+  border-radius: 8px;
+}
+
+.package:hover {
+  text-decoration: none;
+  border-color: var(--fog);
+}
+
+.pkg-name {
+  font-weight: 600;
+}
+
+.footer {
+  border-top: 1px solid var(--tint);
+}
+
+.footer-row {
+  padding-block: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.footer-links a {
+  color: var(--fog);
+}
+
+.footer-links a:hover {
+  color: var(--ink);
+}
+
+.fog {
+  color: var(--fog);
+}
+.cobalt {
+  color: var(--cobalt);
+}
+.plum {
+  color: var(--plum);
+}
+.teal {
+  color: var(--teal);
+}
+.rust {
+  color: var(--rust);
 }
 </style>
