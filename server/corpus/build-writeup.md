@@ -12,7 +12,7 @@ Recruiters skim. A chat lets them ask the exact question they care about and get
 - Chunking: split by section, each chunk tagged with a stable id like resume.md#accomplishr
 - Ingestion: a script embeds every chunk with Pinecone's hosted multilingual-e5-large model through LangChain and replaces the index namespace, so removed sections stop being retrievable
 - Retrieval: a Nuxt server route embeds the question (plus the previous one, for follow-ups) and pulls the top-k sections from Pinecone with LangChain's PineconeStore
-- Answering: the same route calls Claude through the Anthropic SDK, so no API key reaches the browser. The model answers using only the retrieved sections and returns structured JSON: the answer plus the chunk ids it used
+- Answering: the same route calls the configured model (Claude by default, or Llama via Groq, Gemini or OpenRouter, picked with one environment variable), so no API key reaches the browser. The model answers using only the retrieved sections and returns structured JSON: the answer plus the chunk ids it used
 - The server drops any cited id that isn't in the deployed corpus, so every source link opens a real document
 
 ## Guardrails
