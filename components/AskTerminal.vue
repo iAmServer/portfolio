@@ -8,7 +8,7 @@
 
     <div ref="logEl" class="log" aria-live="polite">
       <div v-for="(entry, i) in entries" :key="i" class="entry">
-        <div>
+        <div class="q">
           <span class="fog">&gt;</span> <span class="cobalt">ask</span>
           <span class="plum">"{{ entry.q }}"</span>
         </div>
@@ -17,6 +17,19 @@
         <template v-else>
           <div class="body">{{ entry.a }}</div>
         </template>
+      </div>
+
+      <div v-if="!asked" class="suggestions">
+        <span class="fog">try</span>
+        <button
+          v-for="s in suggestions"
+          :key="s"
+          type="button"
+          class="suggestion"
+          @click="ask(s)"
+        >
+          {{ s }}
+        </button>
       </div>
     </div>
 
@@ -72,6 +85,13 @@ const entries = ref<Entry[]>([
   },
 ]);
 
+const suggestions = [
+  "Has he built payment systems?",
+  "What AI work has he shipped?",
+  "Is he open to remote roles?",
+];
+const asked = computed(() => entries.value.some((e) => !e.example));
+
 const question = ref("");
 const busy = ref(false);
 const logEl = ref<HTMLElement>();
@@ -80,6 +100,11 @@ const inputEl = ref<HTMLInputElement>();
 async function scrollToEnd() {
   await nextTick();
   logEl.value?.scrollTo({ top: logEl.value.scrollHeight, behavior: "smooth" });
+}
+
+function ask(q: string) {
+  question.value = q;
+  submit();
 }
 
 async function submit() {
@@ -138,6 +163,15 @@ defineExpose({ focus });
   overflow: hidden;
   font-size: 14px;
   line-height: 1.8;
+  display: flex;
+  flex-direction: column;
+  height: 460px;
+}
+
+.tabbar,
+.prompt,
+.notice {
+  flex: none;
 }
 
 .tabbar {
@@ -171,8 +205,38 @@ defineExpose({ focus });
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-height: 420px;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.q .plum {
+  margin-left: 1ch;
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.suggestion {
+  font: inherit;
+  font-size: 13px;
+  padding: 6px 12px;
+  min-height: 44px;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--tint);
+  border-radius: 9999px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.suggestion:hover {
+  border-color: var(--fog);
 }
 
 .body {
@@ -250,5 +314,12 @@ defineExpose({ focus });
 }
 .rust {
   color: var(--rust);
+}
+
+@media (max-width: 640px) {
+  .terminal {
+    height: 420px;
+    font-size: 13px;
+  }
 }
 </style>
