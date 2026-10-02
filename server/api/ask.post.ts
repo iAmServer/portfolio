@@ -1,5 +1,3 @@
-import Anthropic from "@anthropic-ai/sdk";
-
 const MAX_QUESTION_CHARS = 500;
 const MAX_HISTORY = 3;
 
@@ -24,8 +22,6 @@ const OUTPUT_SCHEMA = {
   required: ["answer", "sources", "in_scope"],
   additionalProperties: false,
 } as const;
-
-let client: Anthropic | undefined;
 
 function escapeXml(text: string) {
   return text
@@ -53,7 +49,7 @@ function parseHistory(raw: unknown): Exchange[] {
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
-  if (!config.anthropicApiKey) {
+  if (!resolveProvider()) {
     throw createError({
       statusCode: 503,
       statusMessage: "The ask terminal isn't configured yet.",
@@ -98,9 +94,7 @@ export default defineEventHandler(async (event) => {
     chunks
       .map(
         (c) =>
-          `<chunk id="${c.id}" title="${escapeXml(c.title)}">\n${escapeXml(
-            c.text,
-          )}\n</chunk>`,
+          `<chunk id="${c.id}" title="${escapeXml(c.title)}">\n${escapeXml(c.text)}\n</chunk>`,
       )
       .join("\n") +
     "\n</documents>";
@@ -119,83 +113,38 @@ export default defineEventHandler(async (event) => {
         "\n</previous_exchanges>\n\n"
       : "") + `<question>${escapeXml(question)}</question>`;
 
-  client ??= new Anthropic({
-    apiKey: config.anthropicApiKey,
-    maxRetries: 2,
-    timeout: 60_000,
-  });
-
-  let message: Anthropic.Beta.BetaMessage;
+  let result: GenerateResult;
   try {
-    message = await client.beta.messages.create({
-      model: config.askModel || "claude-opus-5-5",
-      max_tokens: 4000,
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      output_config: {
-        effort: "low",
-        format: { type: "json_schema", schema: OUTPUT_SCHEMA },
-      },
+    result = await generateAnswer({
       system: SYSTEM_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: documents,
-              ...(fullCorpus && {
-                cache_control: { type: "ephemeral" as const },
-              }),
-            },
-            { type: "text", text: prompt },
-          ],
-        },
-      ],
+      documents,
+      prompt,
+      schema: OUTPUT_SCHEMA,
+      // The full corpus is identical on every request, so it's worth caching.
+      cacheDocuments: fullCorpus,
     });
   } catch (error) {
-    if (error instanceof Anthropic.RateLimitError) {
+    if (error instanceof LlmError) {
       throw createError({
-        statusCode: 429,
-        statusMessage: "The terminal is busy. Try again shortly.",
+        statusCode: error.statusCode,
+        statusMessage: error.message,
       });
     }
-    if (error instanceof Anthropic.APIError) {
-      console.error(
-        `[ask] Anthropic API error ${error.status}: ${error.message}`,
-      );
-    } else {
-      console.error("[ask] request failed", error);
-    }
+    console.error("[ask] couldn't use model output", error);
     throw createError({
       statusCode: 502,
-      statusMessage: "Couldn't reach the model. Try again.",
+      statusMessage: "Something went wrong. Try again.",
     });
   }
 
-  if (message.stop_reason === "refusal") {
+  if (result.refused) {
     return {
       answer:
         "I can only answer questions about Joshua's professional background.",
       sources: [],
     };
   }
-
-  const text = message.content
-    .filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === "text")
-    .map((b) => b.text)
-    .join("");
-
-  let parsed: { answer?: unknown; sources?: unknown };
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    console.error("[ask] unparseable model output", message.stop_reason);
-    throw createError({
-      statusCode: 502,
-      statusMessage: "Something went wrong. Try again.",
-    });
-  }
+  const parsed = result.json;
 
   const answer = typeof parsed.answer === "string" ? parsed.answer.trim() : "";
   const sourceIds = Array.isArray(parsed.sources)
