@@ -1,75 +1,32 @@
-# Nuxt Minimal Starter
+# iamserver.dev
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Joshua Egbeyemi's portfolio: a Nuxt site whose centrepiece is an "ask" terminal that answers questions about his work from his own documents, with sources.
+
+## How the ask terminal works
+
+- `server/corpus/*.md` holds the documents (résumé, projects, build write-up). Each `##` section is a chunk with a stable id such as `resume.md#accomplishr`.
+- `scripts/ingest.ts` embeds every chunk with Pinecone's hosted `multilingual-e5-large` model via LangChain and writes it to a Pinecone index.
+- `POST /api/ask` (`server/api/ask.post.ts`) retrieves the top-k chunks from Pinecone, asks Claude to answer from them only, and returns `{ answer, sources }`. Cited ids that aren't in the corpus are dropped.
+- `GET /api/docs/:file` serves a corpus file so source links open in the on-page viewer.
+- If Pinecone isn't configured or a search fails, the route sends the whole corpus behind a prompt-cache breakpoint instead.
+- Guardrails: scope and prompt-injection rules in the system prompt, a 500-character question cap, and per-IP and global in-memory rate limits (`server/utils/rateLimit.ts`).
 
 ## Setup
 
-Make sure to install dependencies:
-
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
+cp .env.example .env   # fill in NUXT_ANTHROPIC_API_KEY and NUXT_PINECONE_API_KEY
+npm run ingest         # one-off: creates the Pinecone index (if needed) and loads the corpus
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
+
+Run `npm run ingest` again only if you edit a file in `server/corpus/`.
 
 ## Production
 
-Build the application for production:
-
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+node .output/server/index.mjs
 ```
 
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+The ask terminal needs a server runtime, so deploy the `build` output (Node, Vercel, Netlify, etc.). `npm run generate` produces a static site without the API routes.

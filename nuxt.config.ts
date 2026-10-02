@@ -5,6 +5,15 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-01-01",
   devtools: { enabled: true },
   runtimeConfig: {
+    // Server-only. Set NUXT_ANTHROPIC_API_KEY in the deployment environment.
+    anthropicApiKey: "",
+    askModel: "claude-opus-5-5",
+    askDailyLimit: 1000,
+    // Optional retrieval. Without these the full corpus is sent on every question.
+    pineconeApiKey: "",
+    pineconeIndex: "portfolio",
+    pineconeNamespace: "corpus",
+    retrievalTopK: 6,
     public: {
       name: "Joshua Egbeyemi",
       role: "Senior Full-Stack Engineer, Identity, Search & Applied AI Systems",
@@ -19,6 +28,13 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "nuxt-og-image",
   ],
+  typescript: {
+    // scripts/ runs under Node's type stripping and has its own tsconfig.
+    tsConfig: { exclude: ["../scripts"] },
+  },
+  nitro: {
+    serverAssets: [{ baseName: "corpus", dir: "./corpus" }],
+  },
   site: {
     url: "https://iamserver.dev",
   },
@@ -26,7 +42,13 @@ export default defineNuxtConfig({
     display: "swap",
     families: {
       Inter: {
-        wght: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+        wght: [400, 500, 700],
+      },
+      Rubik: {
+        wght: [400, 500, 600],
+      },
+      "IBM Plex Mono": {
+        wght: [400, 600],
       },
     },
   },
@@ -51,8 +73,9 @@ export default defineNuxtConfig({
         { name: "apple-mobile-web-app-title", content: "Joshua Egbeyemi" },
         { name: "author", content: "Joshua Egbeyemi" },
         { name: "aplication-name", content: "Joshua Egbeyemi" },
-        { name: "theme-color", content: "#0a0a0a" },
-        { name: "color-scheme", content: "dark" },
+        { name: "theme-color", content: "#FFFFFF", media: "(prefers-color-scheme: light)" },
+        { name: "theme-color", content: "#14141F", media: "(prefers-color-scheme: dark)" },
+        { name: "color-scheme", content: "light dark" },
         {
           name: "apple-mobile-web-app-status-bar-style",
           content: "black-translucent",
