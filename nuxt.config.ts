@@ -5,9 +5,17 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-01-01",
   devtools: { enabled: true },
   runtimeConfig: {
-    // Server-only. Set NUXT_ANTHROPIC_API_KEY in the deployment environment.
+    // Server-only. NUXT_AI_PROVIDER picks the model service: anthropic, groq,
+    // gemini or openrouter. Only the chosen provider's key needs to be set.
+    aiProvider: "anthropic",
     anthropicApiKey: "",
-    askModel: "claude-opus-5-5",
+    groqApiKey: "",
+    geminiApiKey: "",
+    openrouterApiKey: "",
+    // Empty uses the provider's default model (see server/utils/llm.ts).
+    askModel: "",
+    // Optional: override the OpenAI-compatible endpoint (groq/gemini/openrouter).
+    aiBaseUrl: "",
     askDailyLimit: 1000,
     // Optional retrieval. Without these the full corpus is sent on every question.
     pineconeApiKey: "",
