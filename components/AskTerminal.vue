@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/html-self-closing -->
 <template>
   <div id="chat" class="terminal mono">
     <div class="tabbar">
@@ -79,19 +80,19 @@
 const docs = useDocViewer();
 
 const entries = ref<Entry[]>([
-  {
-    q: "Has he built payment systems?",
-    a: "Yes. At Accomplishr he designed a microservice-based payment system for every product feature: Stripe and PayPal, with built-in identity verification.",
-    sources: [
-      { id: "resume.md#accomplishr", file: "resume.md", title: "Accomplishr" },
-      {
-        id: "projects.md#payments-platform",
-        file: "projects.md",
-        title: "Payments platform",
-      },
-    ],
-    example: true,
-  },
+  // {
+  //   q: "Has he built payment systems?",
+  //   a: "Yes. At Accomplishr he designed a microservice-based payment system for every product feature: Stripe and PayPal, with built-in identity verification.",
+  //   sources: [
+  //     { id: "resume.md#accomplishr", file: "resume.md", title: "Accomplishr" },
+  //     {
+  //       id: "projects.md#payments-platform",
+  //       file: "projects.md",
+  //       title: "Payments platform",
+  //     },
+  //   ],
+  //   example: true,
+  // },
   {
     q: "Biggest performance win?",
     a: "Rebuilt user search on OpenSearch vector embeddings. Average response: 5s → <200ms.",

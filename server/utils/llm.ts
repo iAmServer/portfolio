@@ -1,20 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-export type Provider = "anthropic" | "groq" | "gemini" | "openrouter";
-
-interface ProviderInfo {
-  label: string;
-  /** Runtime-config key holding this provider's API key. */
-  keyName:
-    | "anthropicApiKey"
-    | "groqApiKey"
-    | "geminiApiKey"
-    | "openrouterApiKey";
-  defaultModel: string;
-  /** OpenAI-compatible chat completions endpoint; absent for Anthropic's own SDK. */
-  baseUrl?: string;
-}
-
 export const PROVIDERS: Record<Provider, ProviderInfo> = {
   anthropic: {
     label: "Anthropic",
@@ -24,7 +9,7 @@ export const PROVIDERS: Record<Provider, ProviderInfo> = {
   groq: {
     label: "Groq",
     keyName: "groqApiKey",
-    defaultModel: "llama-3.3-70b-versatile",
+    defaultModel: "openai/gpt-oss-120b",
     baseUrl: "https://api.groq.com/openai/v1",
   },
   gemini: {
@@ -41,31 +26,8 @@ export const PROVIDERS: Record<Provider, ProviderInfo> = {
   },
 };
 
-export interface AnswerJson {
-  answer?: unknown;
-  sources?: unknown;
-}
-
-export interface GenerateInput {
-  system: string;
-  documents: string;
-  prompt: string;
-  /** JSON schema the answer must follow. */
-  schema: Record<string, unknown>;
-  /** The documents are identical on every request, so they're worth caching. */
-  cacheDocuments: boolean;
-}
-
-export type GenerateResult =
-  | { refused: true }
-  | { refused: false; json: AnswerJson };
-
-/** An error safe to show the visitor, with the HTTP status to return. */
 export class LlmError extends Error {
-  constructor(
-    public statusCode: number,
-    message: string,
-  ) {
+  constructor(public statusCode: number, message: string) {
     super(message);
   }
 }
@@ -75,7 +37,9 @@ export function resolveProvider() {
   const name = String(config.aiProvider || "anthropic").toLowerCase();
   if (!(name in PROVIDERS)) {
     console.error(
-      `[ask] Unknown NUXT_AI_PROVIDER "${name}"; use one of ${Object.keys(PROVIDERS).join(", ")}`,
+      `[ask] Unknown NUXT_AI_PROVIDER "${name}"; use one of ${Object.keys(
+        PROVIDERS,
+      ).join(", ")}`,
     );
     return undefined;
   }
@@ -92,7 +56,6 @@ export function resolveProvider() {
   };
 }
 
-/** Models sometimes wrap JSON in prose or code fences; take the outermost object. */
 function parseJson(text: string): AnswerJson {
   try {
     return JSON.parse(text);
@@ -175,7 +138,6 @@ interface ChatCompletion {
   choices?: { message?: { content?: string | null } }[];
 }
 
-/** Groq, Gemini and OpenRouter all expose an OpenAI-compatible chat completions API. */
 async function generateWithOpenAICompatible(
   info: ProviderInfo,
   apiKey: string,
@@ -184,7 +146,9 @@ async function generateWithOpenAICompatible(
 ): Promise<GenerateResult> {
   const system =
     input.system +
-    `\n\nRespond with only a JSON object matching this schema, no other text:\n${JSON.stringify(input.schema)}`;
+    `\n\nRespond with only a JSON object matching this schema, no other text:\n${JSON.stringify(
+      input.schema,
+    )}`;
 
   let res: ChatCompletion;
   try {

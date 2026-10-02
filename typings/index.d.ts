@@ -52,3 +52,31 @@ interface Window {
 }
 
 type Theme = "light" | "dark";
+
+type Provider = "anthropic" | "groq" | "gemini" | "openrouter";
+
+interface ProviderInfo {
+  label: string;
+  keyName:
+    | "anthropicApiKey"
+    | "groqApiKey"
+    | "geminiApiKey"
+    | "openrouterApiKey";
+  defaultModel: string;
+  baseUrl?: string;
+}
+
+interface AnswerJson {
+  answer?: unknown;
+  sources?: unknown;
+}
+
+interface GenerateInput {
+  system: string;
+  documents: string;
+  prompt: string;
+  schema: Record<string, unknown>;
+  cacheDocuments: boolean;
+}
+
+type GenerateResult = { refused: true } | { refused: false; json: AnswerJson };
