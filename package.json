@@ -25,6 +25,7 @@
     "nuxt-og-image": "^6.8.0",
     "satori": "^0.33.4",
     "tailwindcss": "^4.1.6",
+    "unpdf": "^1.8.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },

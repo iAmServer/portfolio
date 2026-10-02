@@ -44,3 +44,41 @@ export function chunkFile(file: CorpusFile, md: string): Chunk[] {
   flush();
   return chunks;
 }
+
+const MAX_PDF_CHUNK = 1200;
+
+// PDFs have no reliable headings, so pack paragraphs into ~1200 char chunks per page.
+export function chunkPdfPages(file: string, pages: string[]): Chunk[] {
+  const chunks: Chunk[] = [];
+  const name = file.replace(/\.pdf$/i, "");
+
+  pages.forEach((page, i) => {
+    const pieces = page
+      .replace(/\r/g, "")
+      .split(/\n\s*\n/)
+      .flatMap((block) =>
+        block.length > MAX_PDF_CHUNK ? block.split("\n") : [block],
+      )
+      .map((b) => b.trim())
+      .filter(Boolean);
+
+    let buffer = "";
+    let n = 0;
+    const flush = () => {
+      if (!buffer) return;
+      chunks.push({
+        id: `${file}#p${i + 1}-${++n}`,
+        file,
+        title: `${name} (page ${i + 1})`,
+        text: buffer,
+      });
+      buffer = "";
+    };
+    for (const piece of pieces) {
+      if (buffer && buffer.length + piece.length + 1 > MAX_PDF_CHUNK) flush();
+      buffer = buffer ? `${buffer}\n${piece}` : piece;
+    }
+    flush();
+  });
+  return chunks;
+}

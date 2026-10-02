@@ -16,19 +16,6 @@
         <div v-else-if="entry.error" class="body rust">{{ entry.error }}</div>
         <template v-else>
           <div class="body">{{ entry.a }}</div>
-          <div v-if="entry.sources?.length" class="body sources">
-            <span class="teal">sources</span>
-            <button
-              v-for="s in entry.sources"
-              :key="s.id"
-              type="button"
-              class="source"
-              :title="s.title"
-              @click="openSource(s)"
-            >
-              {{ s.id }}
-            </button>
-          </div>
         </template>
       </div>
     </div>
@@ -77,32 +64,10 @@
 </template>
 
 <script setup lang="ts">
-const docs = useDocViewer();
-
 const entries = ref<Entry[]>([
-  // {
-  //   q: "Has he built payment systems?",
-  //   a: "Yes. At Accomplishr he designed a microservice-based payment system for every product feature: Stripe and PayPal, with built-in identity verification.",
-  //   sources: [
-  //     { id: "resume.md#accomplishr", file: "resume.md", title: "Accomplishr" },
-  //     {
-  //       id: "projects.md#payments-platform",
-  //       file: "projects.md",
-  //       title: "Payments platform",
-  //     },
-  //   ],
-  //   example: true,
-  // },
   {
     q: "Biggest performance win?",
     a: "Rebuilt user search on OpenSearch vector embeddings. Average response: 5s → <200ms.",
-    sources: [
-      {
-        id: "projects.md#semantic-search-rebuild",
-        file: "projects.md",
-        title: "Semantic search rebuild",
-      },
-    ],
     example: true,
   },
 ]);
@@ -111,10 +76,6 @@ const question = ref("");
 const busy = ref(false);
 const logEl = ref<HTMLElement>();
 const inputEl = ref<HTMLInputElement>();
-
-function openSource(s: Source) {
-  docs.open(s.file, s.id.split("#")[1]);
-}
 
 async function scrollToEnd() {
   await nextTick();
@@ -137,15 +98,11 @@ async function submit() {
   scrollToEnd();
 
   try {
-    const res = await $fetch<{ answer: string; sources: Source[] }>(
-      "/api/ask",
-      {
-        method: "POST",
-        body: { question: q, history },
-      },
-    );
+    const res = await $fetch<{ answer: string }>("/api/ask", {
+      method: "POST",
+      body: { question: q, history },
+    });
     entry.a = res.answer;
-    entry.sources = res.sources;
   } catch (err: unknown) {
     const e = err as {
       statusMessage?: string;
@@ -222,27 +179,6 @@ defineExpose({ focus });
   padding-left: 16px;
   color: var(--slate);
   white-space: pre-wrap;
-}
-
-.sources {
-  font-size: 13px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 8px;
-}
-
-.source {
-  font: inherit;
-  font-weight: 600;
-  padding: 0;
-  background: none;
-  border: none;
-  color: var(--ink);
-  cursor: pointer;
-}
-
-.source:hover {
-  text-decoration: underline;
 }
 
 .prompt {

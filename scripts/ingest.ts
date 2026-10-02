@@ -1,8 +1,9 @@
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { Document } from "@langchain/core/documents";
 import { PineconeEmbeddings, PineconeStore } from "@langchain/pinecone";
 import { Pinecone } from "@pinecone-database/pinecone";
-import { CORPUS_FILES, chunkFile } from "../server/utils/chunk.ts";
+import { extractText, getDocumentProxy } from "unpdf";
+import { chunkPdfPages } from "../server/utils/chunk.ts";
 
 const EMBEDDING_MODEL = "multilingual-e5-large";
 const EMBEDDING_DIMENSION = 1024;
@@ -18,17 +19,22 @@ if (!apiKey) {
   process.exit(1);
 }
 
+const corpusDir = new URL("../server/corpus/", import.meta.url);
+const pdfs = (await readdir(corpusDir)).filter((f) => /\.pdf$/i.test(f)).sort();
+if (!pdfs.length) {
+  console.error("No PDFs found in server/corpus. Add some and re-run.");
+  process.exit(1);
+}
+
 const chunks = (
   await Promise.all(
-    CORPUS_FILES.map(async (file) =>
-      chunkFile(
-        file,
-        await readFile(
-          new URL(`../server/corpus/${file}`, import.meta.url),
-          "utf8",
-        ),
-      ),
-    ),
+    pdfs.map(async (file) => {
+      const pdf = await getDocumentProxy(
+        new Uint8Array(await readFile(new URL(file, corpusDir))),
+      );
+      const { text } = await extractText(pdf, { mergePages: false });
+      return chunkPdfPages(file, text);
+    }),
   )
 ).flat();
 

@@ -6574,6 +6574,11 @@ unimport@^6.2.0:
     unplugin "^3.3.0"
     unplugin-utils "^0.3.2"
 
+unpdf@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.npmjs.org/unpdf/-/unpdf-1.8.1.tgz"
+  integrity sha512-xkURhy2SoGpOIH0a1gLHNkASPIQYonadDJs2AQwPEfUakafeD9EA1WTWWsaR++gfTCXJpV27W7tU1nXuk82UKQ==
+
 unplugin-utils@^0.2.0, unplugin-utils@^0.2.3, unplugin-utils@^0.2.4:
   version "0.2.4"
   resolved "https://registry.npmjs.org/unplugin-utils/-/unplugin-utils-0.2.4.tgz"

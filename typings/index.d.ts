@@ -1,13 +1,6 @@
-interface Source {
-  id: string;
-  file: string;
-  title: string;
-}
-
 interface Entry {
   q: string;
   a?: string;
-  sources?: Source[];
   pending?: boolean;
   error?: string;
   example?: boolean;
@@ -26,7 +19,7 @@ interface OpenDoc {
 
 interface Chunk {
   id: string;
-  file: CorpusFile;
+  file: string;
   title: string;
   text: string;
 }
@@ -68,7 +61,7 @@ interface ProviderInfo {
 
 interface AnswerJson {
   answer?: unknown;
-  sources?: unknown;
+  in_scope?: unknown;
 }
 
 interface GenerateInput {

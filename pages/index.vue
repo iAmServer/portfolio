@@ -10,9 +10,9 @@
           <span class="badge">Open to senior &amp; AI roles</span>
           <h1>I build systems that stay fast and secure when it matters.</h1>
           <p class="lead">
-            Senior full stack engineer, 10+ years across search, payments, access control and
-            real-time features. Ask the terminal anything: it answers from my actual documents, with
-            sources.
+            Senior full stack engineer, 10+ years across search, payments,
+            access control and real-time features. Ask the terminal anything: it
+            answers from my actual documents, with sources.
           </p>
           <div class="links">
             <a href="#how">See how the terminal works &gt;</a>
@@ -25,7 +25,9 @@
         <div id="previously" class="eyebrow">Previously building at</div>
         <ul class="companies">
           <li v-for="c in companies" :key="c.name">
-            <a :href="c.url" target="_blank" rel="noopener noreferrer">{{ c.name }}</a>
+            <a :href="c.url" target="_blank" rel="noopener noreferrer">{{
+              c.name
+            }}</a>
           </li>
         </ul>
       </section>
@@ -35,15 +37,24 @@
           <div class="eyebrow">How the terminal works</div>
           <h2 class="h2">A small RAG system, built like production.</h2>
           <p class="muted narrow">
-            Pinecone retrieval through LangChain, answered by Claude from a Nuxt server route. Scoped
-            to questions about me, defended against prompt injection, rate-limited, and every answer
-            cites the document it came from.
+            Pinecone retrieval through LangChain, answered by Claude from a Nuxt
+            server route. Scoped to questions about me, defended against prompt
+            injection, rate-limited, and every answer cites the document it came
+            from.
           </p>
-          <button type="button" class="text-btn" @click="docs.open('build-writeup.md')">
+          <button
+            type="button"
+            class="text-btn"
+            @click="docs.open('build-writeup.md')"
+          >
             Read the build write-up &gt;
           </button>
         </div>
-        <div class="code-card mono" role="figure" aria-label="RAG pipeline configuration">
+        <div
+          class="code-card mono"
+          role="figure"
+          aria-label="RAG pipeline configuration"
+        >
           <div class="code-title">rag.pipeline.ts</div>
           <pre><span class="cobalt">pipeline</span>({
   <span class="cobalt">sources</span>: [<span class="plum">"resume"</span>, <span class="plum">"projects"</span>, <span class="plum">"build-writeup"</span>],
@@ -82,9 +93,21 @@
         <span class="fog">© {{ year }} {{ config.public.name }}</span>
         <div class="footer-links">
           <a href="mailto:dasther@outlook.com">dasther@outlook.com</a>
-          <a href="https://linkedin.com/in/iamserver/" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="https://github.com/iamserver" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://www.npmjs.com/~iamserver" target="_blank" rel="noopener">npm</a>
+          <a
+            href="https://linkedin.com/in/iamserver/"
+            target="_blank"
+            rel="noopener"
+            >LinkedIn</a
+          >
+          <a href="https://github.com/iamserver" target="_blank" rel="noopener"
+            >GitHub</a
+          >
+          <a
+            href="https://www.npmjs.com/~iamserver"
+            target="_blank"
+            rel="noopener"
+            >npm</a
+          >
         </div>
       </div>
     </footer>
@@ -94,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-defineOgImageComponent("Home");
+defineOgImage("Home");
 
 const config = useRuntimeConfig();
 const docs = useDocViewer();
@@ -113,7 +136,10 @@ const packages = [
     name: "tailwind-sidebar-expanded",
     detail: "Expandable/collapsible sidebar variant for Tailwind.",
   },
-  { name: "ngx-countdown", detail: "Angular directive for configurable countdown timers." },
+  {
+    name: "ngx-countdown",
+    detail: "Angular directive for configurable countdown timers.",
+  },
   { name: "no-log", detail: "Strips console logging from production builds." },
 ];
 
