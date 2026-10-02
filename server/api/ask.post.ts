@@ -25,20 +25,13 @@ const OUTPUT_SCHEMA = {
   additionalProperties: false,
 } as const;
 
-interface AskBody {
-  question?: unknown;
-  history?: unknown;
-}
-
-interface Exchange {
-  q: string;
-  a: string;
-}
-
 let client: Anthropic | undefined;
 
 function escapeXml(text: string) {
-  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 function parseHistory(raw: unknown): Exchange[] {
@@ -46,22 +39,35 @@ function parseHistory(raw: unknown): Exchange[] {
   return raw
     .filter(
       (e): e is Exchange =>
-        !!e && typeof e === "object" && typeof e.q === "string" && typeof e.a === "string",
+        !!e &&
+        typeof e === "object" &&
+        typeof e.q === "string" &&
+        typeof e.a === "string",
     )
     .slice(-MAX_HISTORY)
-    .map((e) => ({ q: e.q.slice(0, MAX_QUESTION_CHARS), a: e.a.slice(0, 1200) }));
+    .map((e) => ({
+      q: e.q.slice(0, MAX_QUESTION_CHARS),
+      a: e.a.slice(0, 1200),
+    }));
 }
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
   if (!config.anthropicApiKey) {
-    throw createError({ statusCode: 503, statusMessage: "The ask terminal isn't configured yet." });
+    throw createError({
+      statusCode: 503,
+      statusMessage: "The ask terminal isn't configured yet.",
+    });
   }
 
   const body = await readBody<AskBody>(event);
-  const question = typeof body?.question === "string" ? body.question.trim() : "";
+  const question =
+    typeof body?.question === "string" ? body.question.trim() : "";
   if (!question) {
-    throw createError({ statusCode: 400, statusMessage: "Ask a question first." });
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Ask a question first.",
+    });
   }
   if (question.length > MAX_QUESTION_CHARS) {
     throw createError({
@@ -72,12 +78,17 @@ export default defineEventHandler(async (event) => {
 
   rateLimit(event, "ask-min", 6, 60_000);
   rateLimit(event, "ask-day", 60, 86_400_000);
-  rateLimit(event, "ask-global", Number(config.askDailyLimit) || 1000, 86_400_000, {
-    global: true,
-  });
+  rateLimit(
+    event,
+    "ask-global",
+    Number(config.askDailyLimit) || 1000,
+    86_400_000,
+    {
+      global: true,
+    },
+  );
 
   const history = parseHistory(body?.history);
-  // Include the previous question so follow-ups like "what stack?" retrieve the right section.
   const searchQuery = [history.at(-1)?.q, question].filter(Boolean).join("\n");
   const { chunks, fullCorpus } = await retrieve(searchQuery);
   const byId = new Map(chunks.map((c) => [c.id, c]));
@@ -85,7 +96,12 @@ export default defineEventHandler(async (event) => {
   const documents =
     "<documents>\n" +
     chunks
-      .map((c) => `<chunk id="${c.id}" title="${escapeXml(c.title)}">\n${escapeXml(c.text)}\n</chunk>`)
+      .map(
+        (c) =>
+          `<chunk id="${c.id}" title="${escapeXml(c.title)}">\n${escapeXml(
+            c.text,
+          )}\n</chunk>`,
+      )
       .join("\n") +
     "\n</documents>";
 
@@ -93,12 +109,21 @@ export default defineEventHandler(async (event) => {
     (history.length
       ? "<previous_exchanges>\n" +
         history
-          .map((e) => `<exchange><q>${escapeXml(e.q)}</q><a>${escapeXml(e.a)}</a></exchange>`)
+          .map(
+            (e) =>
+              `<exchange><q>${escapeXml(e.q)}</q><a>${escapeXml(
+                e.a,
+              )}</a></exchange>`,
+          )
           .join("\n") +
         "\n</previous_exchanges>\n\n"
       : "") + `<question>${escapeXml(question)}</question>`;
 
-  client ??= new Anthropic({ apiKey: config.anthropicApiKey, maxRetries: 2, timeout: 60_000 });
+  client ??= new Anthropic({
+    apiKey: config.anthropicApiKey,
+    maxRetries: 2,
+    timeout: 60_000,
+  });
 
   let message: Anthropic.Beta.BetaMessage;
   try {
@@ -119,9 +144,9 @@ export default defineEventHandler(async (event) => {
             {
               type: "text",
               text: documents,
-              // The full corpus is identical on every request, so cache it; retrieved
-              // top-k sets vary per question and aren't worth a cache write.
-              ...(fullCorpus && { cache_control: { type: "ephemeral" as const } }),
+              ...(fullCorpus && {
+                cache_control: { type: "ephemeral" as const },
+              }),
             },
             { type: "text", text: prompt },
           ],
@@ -130,19 +155,28 @@ export default defineEventHandler(async (event) => {
     });
   } catch (error) {
     if (error instanceof Anthropic.RateLimitError) {
-      throw createError({ statusCode: 429, statusMessage: "The terminal is busy. Try again shortly." });
+      throw createError({
+        statusCode: 429,
+        statusMessage: "The terminal is busy. Try again shortly.",
+      });
     }
     if (error instanceof Anthropic.APIError) {
-      console.error(`[ask] Anthropic API error ${error.status}: ${error.message}`);
+      console.error(
+        `[ask] Anthropic API error ${error.status}: ${error.message}`,
+      );
     } else {
       console.error("[ask] request failed", error);
     }
-    throw createError({ statusCode: 502, statusMessage: "Couldn't reach the model. Try again." });
+    throw createError({
+      statusCode: 502,
+      statusMessage: "Couldn't reach the model. Try again.",
+    });
   }
 
   if (message.stop_reason === "refusal") {
     return {
-      answer: "I can only answer questions about Joshua's professional background.",
+      answer:
+        "I can only answer questions about Joshua's professional background.",
       sources: [],
     };
   }
@@ -157,21 +191,35 @@ export default defineEventHandler(async (event) => {
     parsed = JSON.parse(text);
   } catch {
     console.error("[ask] unparseable model output", message.stop_reason);
-    throw createError({ statusCode: 502, statusMessage: "Something went wrong. Try again." });
+    throw createError({
+      statusCode: 502,
+      statusMessage: "Something went wrong. Try again.",
+    });
   }
 
   const answer = typeof parsed.answer === "string" ? parsed.answer.trim() : "";
   const sourceIds = Array.isArray(parsed.sources)
-    ? [...new Set(parsed.sources.filter((s): s is string => typeof s === "string"))]
+    ? [
+        ...new Set(
+          parsed.sources.filter((s): s is string => typeof s === "string"),
+        ),
+      ]
     : [];
 
-  // Anonymous log of what people ask; no IP or identifiers.
-  console.info(`[ask] ${JSON.stringify(question)} -> ${sourceIds.join(", ") || "(no sources)"}`);
+  console.info(
+    `[ask] ${JSON.stringify(question)} -> ${
+      sourceIds.join(", ") || "(no sources)"
+    }`,
+  );
 
   return {
     answer,
     sources: sourceIds
       .filter((id) => byId.has(id))
-      .map((id) => ({ id, file: byId.get(id)!.file, title: byId.get(id)!.title })),
+      .map((id) => ({
+        id,
+        file: byId.get(id)!.file,
+        title: byId.get(id)!.title,
+      })),
   };
 });

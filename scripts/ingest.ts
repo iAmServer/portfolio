@@ -1,20 +1,9 @@
-/**
- * Chunks server/corpus/*.md by section, embeds each chunk with Pinecone's
- * hosted embedding model and replaces the namespace's contents in Pinecone.
- *
- *   npm run ingest
- *
- * Reads NUXT_PINECONE_API_KEY, NUXT_PINECONE_INDEX and NUXT_PINECONE_NAMESPACE
- * (the same variables the server uses) from the environment or .env.
- * Re-run it whenever a corpus file changes.
- */
 import { readFile } from "node:fs/promises";
 import { Document } from "@langchain/core/documents";
 import { PineconeEmbeddings, PineconeStore } from "@langchain/pinecone";
 import { Pinecone } from "@pinecone-database/pinecone";
 import { CORPUS_FILES, chunkFile } from "../server/utils/chunk.ts";
 
-// Keep in sync with EMBEDDING_MODEL in server/utils/retriever.ts.
 const EMBEDDING_MODEL = "multilingual-e5-large";
 const EMBEDDING_DIMENSION = 1024;
 
@@ -23,14 +12,22 @@ const indexName = process.env.NUXT_PINECONE_INDEX || "portfolio";
 const namespace = process.env.NUXT_PINECONE_NAMESPACE || "corpus";
 
 if (!apiKey) {
-  console.error("Set NUXT_PINECONE_API_KEY (in the environment or .env) first.");
+  console.error(
+    "Set NUXT_PINECONE_API_KEY (in the environment or .env) first.",
+  );
   process.exit(1);
 }
 
 const chunks = (
   await Promise.all(
     CORPUS_FILES.map(async (file) =>
-      chunkFile(file, await readFile(new URL(`../server/corpus/${file}`, import.meta.url), "utf8")),
+      chunkFile(
+        file,
+        await readFile(
+          new URL(`../server/corpus/${file}`, import.meta.url),
+          "utf8",
+        ),
+      ),
     ),
   )
 ).flat();
@@ -48,7 +45,6 @@ await pinecone.createIndex({
 
 const index = pinecone.index(indexName);
 
-// Replace rather than merge so deleted sections stop being retrievable.
 try {
   await index.namespace(namespace).deleteAll();
 } catch {
@@ -56,7 +52,11 @@ try {
 }
 
 const store = new PineconeStore(
-  new PineconeEmbeddings({ apiKey, model: EMBEDDING_MODEL, params: { input_type: "passage" } }),
+  new PineconeEmbeddings({
+    apiKey,
+    model: EMBEDDING_MODEL,
+    params: { input_type: "passage" },
+  }),
   { pineconeIndex: index, namespace, textKey: "text" },
 );
 

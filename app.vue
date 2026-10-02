@@ -7,7 +7,6 @@
 </template>
 
 <script setup lang="ts">
-// Apply the saved/system theme before first paint so there's no flash.
 useHead({
   script: [
     {

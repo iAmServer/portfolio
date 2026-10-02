@@ -5,11 +5,9 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-01-01",
   devtools: { enabled: true },
   runtimeConfig: {
-    // Server-only. Set NUXT_ANTHROPIC_API_KEY in the deployment environment.
     anthropicApiKey: "",
     askModel: "claude-opus-5-5",
     askDailyLimit: 1000,
-    // Optional retrieval. Without these the full corpus is sent on every question.
     pineconeApiKey: "",
     pineconeIndex: "portfolio",
     pineconeNamespace: "corpus",
@@ -29,7 +27,6 @@ export default defineNuxtConfig({
     "nuxt-og-image",
   ],
   typescript: {
-    // scripts/ runs under Node's type stripping and has its own tsconfig.
     tsConfig: { exclude: ["../scripts"] },
   },
   nitro: {
@@ -73,8 +70,16 @@ export default defineNuxtConfig({
         { name: "apple-mobile-web-app-title", content: "Joshua Egbeyemi" },
         { name: "author", content: "Joshua Egbeyemi" },
         { name: "aplication-name", content: "Joshua Egbeyemi" },
-        { name: "theme-color", content: "#FFFFFF", media: "(prefers-color-scheme: light)" },
-        { name: "theme-color", content: "#14141F", media: "(prefers-color-scheme: dark)" },
+        {
+          name: "theme-color",
+          content: "#FFFFFF",
+          media: "(prefers-color-scheme: light)",
+        },
+        {
+          name: "theme-color",
+          content: "#14141F",
+          media: "(prefers-color-scheme: dark)",
+        },
         { name: "color-scheme", content: "light dark" },
         {
           name: "apple-mobile-web-app-status-bar-style",

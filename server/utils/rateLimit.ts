@@ -1,16 +1,7 @@
 import type { H3Event } from "h3";
 
-interface Window {
-  count: number;
-  resetAt: number;
-}
-
 const buckets = new Map<string, Window>();
 
-/**
- * Fixed-window, in-memory rate limiter. Good enough for a single server
- * instance; swap for Redis/KV if the site is deployed to several.
- */
 export function rateLimit(
   event: H3Event,
   name: string,
@@ -18,7 +9,9 @@ export function rateLimit(
   windowMs: number,
   { global = false } = {},
 ) {
-  const ip = global ? "*" : (getRequestIP(event, { xForwardedFor: true }) ?? "unknown");
+  const ip = global
+    ? "*"
+    : getRequestIP(event, { xForwardedFor: true }) ?? "unknown";
   const key = `${name}:${ip}`;
   const now = Date.now();
 
@@ -34,7 +27,11 @@ export function rateLimit(
   }
 
   if (win.count > limit) {
-    setResponseHeader(event, "Retry-After", Math.ceil((win.resetAt - now) / 1000));
+    setResponseHeader(
+      event,
+      "Retry-After",
+      Math.ceil((win.resetAt - now) / 1000),
+    );
     throw createError({
       statusCode: 429,
       statusMessage: "Too many questions. Please try again in a little while.",
